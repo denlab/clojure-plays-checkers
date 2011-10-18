@@ -190,35 +190,50 @@
   (next-player :w) => :b)
 
 (defn rm-cell
-  [board [y x]] (update-in board [:board y x] (fn [_] nil)))
-
-(future-fact "add precomp on rm-cell: check if not null")
+  [board [y x]]
+  {:pre [(get-in board [:board y x])]}
+  (update-in board [:board y x] (fn [_] nil)))
 
 (fact
  (rm-cell (new-board :x
                      o o
                      o o) [1 0]) => (new-board :x
                                                o o
-                                               . o))
+                                               . o)
+ (rm-cell (new-board :x
+                     .) [0 0]) => (throws AssertionError))
 
 (defn add-cell
   [{:keys [size] :as board-full} [y x] piece]
+  {:pre [(not (get-in board-full [:board y x]))]}
   (let [new-p
         (cond
-         (or (= :b-king piece) (= :w-king piece)) piece
          (and (= :b piece) (= y 0         ))     :b-king
-         (and (= :w piece) (= y (dec size)))     :w-king)]
+         (and (= :w piece) (= y (dec size)))     :w-king
+         :else                                   piece)]
     (update-in board-full [:board y x] (fn [_] new-p))))
 
 (future-fact "precondition on add-cell : cell must be nil")
 
-(fact "add-cell simple"
+(fact "add-cell simple black"
       (add-cell (new-board :b
                            0 0
-                           . 0) [1 0] :b-king)
+                           . 0) [1 0] :b)
       => (new-board :b
                     0 0
-                    K 0))
+                    x 0))
+
+(fact "add-cell assertion"
+      (add-cell (new-board :b
+                           o) [0 0] :b) => (throws AssertionError))
+
+(fact "add-cell simple white"
+      (add-cell (new-board :b
+                           . K
+                           K K) [0 0] :w)
+      => (new-board :b
+                    o K
+                    K K))
 
 (fact "add-cell kingify black"
       (add-cell (new-board :x
@@ -240,7 +255,7 @@
                                                (rm-cell src)
                                                (add-cell dst (get-in board src))))
 
-(future-fact "a precdondition would be good in mv-cell : src must not be nil, dst must be nil")
+(future-fact "a precondition would be good in mv-cell : src must not be nil, dst must be nil")
 
 (fact
  (let [board {:board [[:piece]]}]
@@ -248,15 +263,6 @@
    (provided
     (rm-cell board [0 0])       => :bd1
     (add-cell :bd1 :dst :piece) => :bd2)))
-
-(fact "mv-cell itest move backwards if king"
-      (let [board (new-board :b
-                             K .
-                             . .)]
-        (mv-cell board [0 0] [1 1]))
-      => (new-board :b
-                    . .
-                    . K))
 
 (defn compute-board-simple
   [board src dst] (update-in (mv-cell board src dst)
@@ -268,6 +274,18 @@
  (provided
   (mv-cell :bd :src :dst) => {:player :p1 :other-stuff :s}
   (next-player :p1)       => :p2))
+
+(fact "compute-board-simple: itest simple mv on 3x3, todelete when ok"
+      (compute-board-simple (new-board :b
+                                       . . .
+                                       . . .
+                                       . . x)
+                            [2 2] [1 1])
+      => (new-board :w
+                     . . .
+                     . x .
+                     . . .))
+
 
 (defn moves-of-pos-simple
   [coord {:keys [size player] :as board}]
@@ -286,6 +304,16 @@
       (compute-board-simple bd :co :co1) => :bd2
       (compute-board-simple bd :co :co2) => :bd3
       (compute-board-simple bd :co :co3) => nil)))
+
+(fact "moves-of-pos-simple: itest simple mv on 3x3, todelete when ok"
+             (moves-of-pos-simple [2 2] (new-board :b
+                                                   . . .
+                                                   . . .
+                                                   . . x))
+             => {[[2 2] [1 1]] (new-board :w
+                                          . . .
+                                          . x .
+                                          . . .)})
 
 (defn neighboors-for-jump-may-be-out-of-bound
   [[y x] size] (let [y- (dec y) y+ (inc y) x- (dec x) x+ (inc x)]
@@ -566,7 +594,7 @@
                                    . x .
                                    . . .)})
 
-(future-fact "moves: itest simple mv, left or right"
+(fact "moves: itest simple mv, left or right"
       (moves (new-board :b
                         . . .
                         . . .
@@ -610,7 +638,5 @@
   (moves (new-board :w
                     . o
                     x .)) => {})
-
-
 
 (println "--------- END OF CHECKERS ----------" (java.util.Date.))
