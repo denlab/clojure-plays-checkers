@@ -213,8 +213,6 @@
          :else                                   piece)]
     (update-in board-full [:board y x] (fn [_] new-p))))
 
-(future-fact "precondition on add-cell : cell must be nil")
-
 (fact "add-cell simple black"
       (add-cell (new-board :b
                            0 0
@@ -255,14 +253,21 @@
                                                (rm-cell src)
                                                (add-cell dst (get-in board src))))
 
-(future-fact "a precondition would be good in mv-cell : src must not be nil, dst must be nil")
-
 (fact
  (let [board {:board [[:piece]]}]
    (mv-cell board [0 0] :dst) => :bd2
    (provided
     (rm-cell board [0 0])       => :bd1
     (add-cell :bd1 :dst :piece) => :bd2)))
+
+(fact
+ (mv-cell (new-board :b
+                     . .
+                     . .) [0 0] [1 1]) => (throws AssertionError)
+
+ (mv-cell (new-board :b
+                     o .
+                     . o) [0 0] [1 1]) => (throws AssertionError))
 
 (defn compute-board-simple
   [board src dst] (update-in (mv-cell board src dst)
