@@ -548,7 +548,25 @@
     (moves-of-pos :c1 :board) => {:path1 :bd1}
     (moves-of-pos :c2 :board) => {:path2 :bd2}))
 
-(future-fact "moves: 'integration test' simple"
+(fact "moves: itest simple mv"
+      (moves (new-board :b
+                        . . 
+                        . x))
+      => {[[1 1] [0 0]] (new-board :w
+                                   K .
+                                   . .)})
+
+(fact "moves: itest simple mv on 3x3"
+      (moves (new-board :b
+                        . . .
+                        . . .
+                        . . x))
+      => {[[2 2] [1 1]] (new-board :w
+                                   . . .
+                                   . x .
+                                   . . .)})
+
+(future-fact "moves: itest simple mv, left or right"
       (moves (new-board :b
                         . . .
                         . . .
@@ -570,7 +588,7 @@
                     . .
                     . o)) => {})
 
-(future-fact "moves: itest can move if king"
+(fact "moves: itest can move backwards if king"
   (moves (new-board :b
                     K .
                     . .)) => {[[0 0] [1 1]] (new-board :w
