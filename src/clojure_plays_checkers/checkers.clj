@@ -287,13 +287,6 @@
       (compute-board-simple bd :co :co2) => :bd3
       (compute-board-simple bd :co :co3) => nil)))
 
-(future-fact "this fact is not at his place")
-(fact "moves-of-pos: itest: can't move because of friend"
-  (moves-of-pos [1 0] (new-board :b
-                                 . x
-                                 x .))
-  => {})
-
 (defn neighboors-for-jump-may-be-out-of-bound
   [[y x] size] (let [y- (dec y) y+ (inc y) x- (dec x) x+ (inc x)]
                  [{:next [y- x-] :next2 [(dec y-) (dec x-)]}
@@ -492,12 +485,17 @@
        (moves-of-pos-simple  :coord :board) => {:path1 :bd1}
        (moves-of-pos-complex :coord :board) => {:path2 :bd2, :path3, :bd3}))
 
-(fact "moves-of-pos: integration test: can't move because of friend"
+(fact "moves-of-pos: itest: can't move because of friend"
   (moves-of-pos [1 0] (new-board :b
                                  . x
                                  x .))
   => {})
 
+(fact "moves-of-pos: itest: can't move because of friend"
+  (moves-of-pos [1 0] (new-board :b
+                                 . x
+                                 x .))
+  => {})
 
 (defn piece-of-player?
   [piece player] (case player
