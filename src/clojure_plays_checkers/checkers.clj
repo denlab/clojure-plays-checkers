@@ -462,21 +462,25 @@
       (king-at-pos? :bd-mat2 :d2) => false
       (possible-jumps :d2 :bd-mat2 :size :player) => [])))
 
-(future-fact "compute-jump one jump of length two"
+(fact "compute-jump one jump of length two"
   (let [jmp1 {:src :s1, :dst :d1, :remove :r1}
         jmp2 {:src :d1, :dst :d2, :remove :r2}]
     (compute-jump jmp1 :bd-mat1 :size :player) => {[jmp1 jmp2] :bd-mat3}
     (provided
       (jump-cell :bd-mat1 :size :player jmp1)     => :bd-mat2
+      (king-at-pos? :bd-mat2 :d1) => false
       (possible-jumps :d1 :bd-mat2 :size :player) => [jmp2]
+
       (jump-cell :bd-mat2 :size :player jmp2)     => :bd-mat3
+      (king-at-pos? :bd-mat3 :d2) => false
       (possible-jumps :d2 :bd-mat3 :size :player) => [])))
 
-(future-fact "compute-jump simple: only one jump"
+(fact "compute-jump simple: only one jump"
   (let [jmp {:src :s :dst :d :remove :r}]
     (compute-jump jmp :bd-mat1 :size :player) => {[jmp] :bd-mat2}
     (provided
       (jump-cell :bd-mat1 :size :player jmp)     => :bd-mat2
+      (king-at-pos? :bd-mat2 :d)                 => false
       (possible-jumps :d :bd-mat2 :size :player) => [])))
 
 
