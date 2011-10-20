@@ -1,0 +1,56 @@
+digraph funtions {
+
+        "new-board-fn" -> "mat-coord";
+        "new-board-fn" -> "new-board-mat";
+        
+        "new-board" -> "new-board-fn";
+
+        "in-bound?" -> "in-bound-one?";
+
+        "neighboors" -> "in-bound?";
+
+        "neighboors-of-piece" -> "neighboors";
+
+        "empty-neighboors-of-piece" -> "neighboors-of-piece";
+
+        "mv-cell" -> "rm-cell";
+        "mv-cell" -> "add-cell";
+
+        "compute-board-simple" -> "mv-cell";
+        "compute-board-simple" -> "next-player";
+
+        "moves-of-pos-simple" -> "compute-board-simple";
+        "moves-of-pos-simple" ->  "empty-neighboors-of-piece";
+        
+        "neighboors-for-jump" -> "neighboors-for-jump-may-be-out-of-bound";
+
+        "jumpable?" -> "next-player";
+
+        "possible-jumps" -> "jumpable?";
+        "possible-jumps" -> "neighboors-for-jump";
+
+        "jump-cell" -> "rm-cell";
+        "jump-cell" -> "mv-cell";
+
+        "king-at-pos?" -> "king?";
+
+        "compute-jump" -> "jump-cell";
+        "compute-jump" -> "possible-jumps";
+        "compute-jump" -> "king-at-pos?";
+
+        "compute-jumps" -> "compute-jump";
+        "compute-jumps" -> "jumps-to-path";
+
+        "moves-of-pos-complex" -> "compute-jumps";
+        "moves-of-pos-complex" -> "possible-jumps";
+
+        "moves-of-pos" -> "moves-of-pos-simple";
+        "moves-of-pos" -> "moves-of-pos-complex";
+
+        "coord-of-player?" -> "piece-of-player?";
+
+        "coords-of-player" -> "coord-of-player?";
+
+        "moves" -> "moves-of-pos";
+        "moves" -> "coords-of-player";
+}
