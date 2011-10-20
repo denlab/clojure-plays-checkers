@@ -293,7 +293,6 @@
                      . x .
                      . . .))
 
-
 (defn moves-of-pos-simple
   [coord {:keys [size player] :as board}]
   (reduce
@@ -506,6 +505,7 @@
                         (zipmap (map jumps-to-path (keys jumps->bds))
                                 (vals jumps->bds))))
                jumps)))
+(future-fact "add bd-next-player h")
 
 (fact "compute-jumps"
   (compute-jumps [:jmp-a :jmp-b] :bd-mat :size :player) => {:path-a  :bd-mat-a
@@ -526,6 +526,8 @@
                  board
                  size
                  player))
+
+(future-fact "fix here: the player is not switched")
 
 (fact
   (let [bd {:board :bd-mat, :size :sz, :player :p1}]
@@ -675,5 +677,17 @@
   (moves (new-board :w
                     . o
                     x .)) => {})
+
+(future-fact "moves: itest jump simple"
+      (moves (new-board :b
+                        . . .
+                        . o .
+                        . . x)
+             => {[[2 2] [0 0]]
+                 (new-board :w
+                            x . .
+                            . . .
+                            . . .)}))
+
 
 (println "--------- END OF CHECKERS ----------" (java.util.Date.))
