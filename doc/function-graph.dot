@@ -1,4 +1,6 @@
-digraph funtions {
+digraph functions {
+
+        
 
         "new-board-fn" -> "mat-coord";
         "new-board-fn" -> "new-board-mat";
@@ -53,4 +55,20 @@ digraph funtions {
 
         "moves" -> "moves-of-pos";
         "moves" -> "coords-of-player";
+
+        "moves" [color=red];
+
+/*
+        "uses full board";
+        "uses bd-mat,size and player" [shape=trian]
+        "other"
+        
+
+"mythtv-theme" [shape=hexagon];
+"cyrus-admin-2.2" [shape=diamond];
+"libungif4g" [shape=triangle];
+"libdbus-c++-dev" [shape=box];
+
+*/
+                  
 }
