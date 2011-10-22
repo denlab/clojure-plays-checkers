@@ -40,8 +40,8 @@
                     [2 0] [2 1] [2 2]])
 
 (fact
- (vector? (mat-coords 3))         => true
- (vector? (get (mat-coords 3) 0)) => true)
+  (mat-coords 3)         => vector?
+  (get (mat-coords 3) 0) => vector?)
 
 (defn new-board-mat
   [board] (let [sym->vals {'x :b 'K :b-king 'o :w '0 :w-king}
@@ -57,10 +57,10 @@
                               [:w  :w-king nil]])
 
 (fact "board is a vec"
-      (vector? (new-board-mat '[.]))         => true
-      (vector? (first (new-board-mat '[.]))) => true)
+  (new-board-mat '[.])         => vector?
+  (first (new-board-mat '[.])) => vector?)
 
-(defn new-board-fn
+(defn new-board-fn "Construct a full board with a player and a matrix."
   [[player & board]]
   (let [s (int (Math/sqrt (count board)))]
     {:size   s
@@ -97,10 +97,11 @@
   [n size] (< -1 n size))
 
 (fact
-  (in-bound-one? -1 2) => false
-  (in-bound-one?  0 2) => true
-  (in-bound-one?  0 1) => true
-  (in-bound-one?  0 2) => true)
+  (in-bound-one? -1  2) => false
+  (in-bound-one?  0 -1) => false
+  (in-bound-one?  0  2) => true
+  (in-bound-one?  0  1) => true
+  (in-bound-one?  0  2) => true)
 
 (defn in-bound?
   [coord size] (every? #(in-bound-one? % size)
@@ -115,12 +116,14 @@
   (in-bound? [:y :x] :size) => false
   (provided (in-bound-one? :y :size) => false))
 
+;.;. One small test for a codebase, one giant leap for quality kind! --
+;.;. @zspencer
 (fact
   (in-bound? [:y :x] :size) => false
   (provided (in-bound-one? :y :size) => true
             (in-bound-one? :x :size) => false))
 
-(defn neighboors 
+(defn neighboors "Compute the coordinates of the neighboors from a place with coordinates [y x]"
   ([size [y x]]
      (set (filter (fn [coord] (in-bound? coord size))
                   [[(dec y) (dec x)] [(dec y) (inc x)]
