@@ -373,6 +373,27 @@
   [nil :w  nil]
   [nil nil :x]] false)
 
+(defn jumpable2?
+  [next-coord next-coord2 {:keys [board player]}]
+  (and (=    (get-in board next-coord) (next-player player))
+       (nil? (get-in board next-coord2))))
+
+(tabular
+ (fact (jumpable2? [1 1] [2 2] {:board ?bd-mat :player :b}) => ?expected)
+ ?bd-mat         ?expected
+
+ [[:b  nil nil]
+  [nil :w  nil]
+  [nil nil nil]] true
+
+  [[:b  nil nil]
+  [nil :x  nil]
+  [nil nil nil]] false
+
+  [[:b  nil nil]
+  [nil :w  nil]
+  [nil nil :x]] false)
+
 (defn possible-jumps
   [coord board-mat size player]
   (reduce (fn [m {:keys [next next2]}]
