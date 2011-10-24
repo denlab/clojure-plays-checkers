@@ -6,7 +6,7 @@
   (:import (java.text SimpleDateFormat))
   (:import (java.util Date)))
 
-(unfinished)
+(unfinished compute-jump2)
 
 (defn print-sym-fn-
   [body]
@@ -116,8 +116,6 @@
   (in-bound? [:y :x] :size) => false
   (provided (in-bound-one? :y :size) => false))
 
-;.;. One small test for a codebase, one giant leap for quality kind! --
-;.;. @zspencer
 (fact
   (in-bound? [:y :x] :size) => false
   (provided (in-bound-one? :y :size) => true
@@ -394,6 +392,8 @@
   [nil :w  nil]
   [nil nil :x]] false)
 
+(future-fact "refactoring in progress: plug jumpable2 when other are ready")
+
 (defn possible-jumps
   [coord board-mat size player]
   (reduce (fn [m {:keys [next next2]}]
@@ -529,6 +529,8 @@
                         (zipmap (map jumps-to-path (keys jumps->bds))
                                 (vals jumps->bds))))
                jumps)))
+
+
 (future-fact "add bd-next-player h")
 
 (fact "compute-jumps"
@@ -543,6 +545,29 @@
                                                     :jumps-b2 :bd-mat-b2}
     (jumps-to-path :jumps-b1)                   => :path-b1
     (jumps-to-path :jumps-b2)                   => :path-b2))
+
+(defn compute-jumps2
+  [jumps {:keys [board size player] :as full-board}]
+  (reduce merge
+          (map (fn [j] (let [jumps->bds (compute-jump2 j full-board)]
+                        (zipmap (map jumps-to-path (keys jumps->bds))
+                                (vals jumps->bds))))
+               jumps)))
+
+(fact "compute-jumps2"
+      (compute-jumps2 [:jmp-a :jmp-b] {:board :bd-mat, :size :size, :player :player})
+      => {:path-a  :bd-a
+          :path-b1 :bd-b1
+          :path-b2 :bd-b2}
+      (provided
+       (compute-jump2 :jmp-a {:board :bd-mat :size :size :player :player}) => {:jumps-a :bd-a}
+       (jumps-to-path :jumps-a)                    => :path-a
+    
+       (compute-jump2 :jmp-b {:board :bd-mat :size :size :player :player}) => {:jumps-b1 :bd-b1
+                                                                               :jumps-b2 :bd-b2}
+       (jumps-to-path :jumps-b1)                   => :path-b1
+       (jumps-to-path :jumps-b2)                   => :path-b2))
+
 
 (defn moves-of-pos-complex
   [coord {:keys [board size player]}]
