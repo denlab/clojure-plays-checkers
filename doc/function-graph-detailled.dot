@@ -42,9 +42,6 @@ digraph funtions {
         "compute-jump" -> "possible-jumps";
         "compute-jump" -> "king-at-pos?";
 
-        "compute-jumps" -> "compute-jump";
-        "compute-jumps" -> "jumps-to-path";
-
         "compute-jumps2" -> "compute-jump";
         "compute-jumps2" -> "jumps-to-path";
 
@@ -77,7 +74,6 @@ digraph funtions {
         "empty-neighboors-of-piece"[bgcolor=green color=green style=filled];
         "neighboors-of-piece"[bgcolor=green color=green style=filled];
 
-        "compute-jumps"[bgcolor=red color=red style=filled];
         "compute-jump"[bgcolor=red color=red style=filled];
         "jump-cell"[bgcolor=red color=red style=filled];
         "possible-jumps"[bgcolor=red color=red style=filled];

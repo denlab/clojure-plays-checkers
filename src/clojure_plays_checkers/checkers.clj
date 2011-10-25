@@ -522,30 +522,6 @@
     {:src :d1 :dst :d2 :remove :r2}
     {:src :d2 :dst :d3 :remove :r3}]) => [:s1 :d1 :d2 :d3])
 
-(defn compute-jumps
-  [jumps bd-mat size player]
-  (reduce merge
-          (map (fn [j] (let [jumps->bds (compute-jump j bd-mat size player)]
-                        (zipmap (map jumps-to-path (keys jumps->bds))
-                                (vals jumps->bds))))
-               jumps)))
-
-
-(future-fact "add bd-next-player h")
-
-(fact "compute-jumps"
-  (compute-jumps [:jmp-a :jmp-b] :bd-mat :size :player) => {:path-a  :bd-mat-a
-                                                            :path-b1 :bd-mat-b1
-                                                            :path-b2 :bd-mat-b2}
-  (provided
-    (compute-jump :jmp-a :bd-mat :size :player) => {:jumps-a :bd-mat-a}
-    (jumps-to-path :jumps-a)                    => :path-a
-    
-    (compute-jump :jmp-b :bd-mat :size :player) => {:jumps-b1 :bd-mat-b1
-                                                    :jumps-b2 :bd-mat-b2}
-    (jumps-to-path :jumps-b1)                   => :path-b1
-    (jumps-to-path :jumps-b2)                   => :path-b2))
-
 (defn compute-jumps2
   [jumps {:keys [board size player] :as full-board}]
   (reduce merge
