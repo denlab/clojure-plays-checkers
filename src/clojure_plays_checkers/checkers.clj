@@ -522,7 +522,7 @@
     {:src :d1 :dst :d2 :remove :r2}
     {:src :d2 :dst :d3 :remove :r3}]) => [:s1 :d1 :d2 :d3])
 
-(defn compute-jumps2
+(defn compute-jumps
   [jumps {:keys [board size player] :as full-board}]
   (reduce merge
           (map (fn [j] (let [jumps->bds (compute-jump2 j full-board)]
@@ -530,8 +530,8 @@
                                 (vals jumps->bds))))
                jumps)))
 
-(fact "compute-jumps2"
-      (compute-jumps2 [:jmp-a :jmp-b] {:board :bd-mat, :size :size, :player :player})
+(fact "compute-jumps"
+      (compute-jumps [:jmp-a :jmp-b] {:board :bd-mat, :size :size, :player :player})
       => {:path-a  :bd-a
           :path-b1 :bd-b1
           :path-b2 :bd-b2}
@@ -547,7 +547,7 @@
 
 (defn moves-of-pos-complex
   [coord {:keys [board size player] :as full-bd}]
-  (compute-jumps2 (possible-jumps coord board size player)
+  (compute-jumps (possible-jumps coord board size player)
                   full-bd))
 
 (future-fact "fix here: the player is not switched")
@@ -557,7 +557,7 @@
     (moves-of-pos-complex :coord bd) => {:path1 :bd1, :path2 :bd2}
     (provided
       (possible-jumps :coord :bd-mat :sz :p1) => [:j1 :j2]
-      (compute-jumps2 [:j1 :j2] {:board :bd-mat :size :sz :player :p1})   => {:path1 :bd1, :path2 :bd2})))
+      (compute-jumps [:j1 :j2] {:board :bd-mat :size :sz :player :p1})   => {:path1 :bd1, :path2 :bd2})))
 
 (fact "moves-of-pos-complex: integration test: can't move because of friend"
   (moves-of-pos-complex [1 0] (new-board :b
