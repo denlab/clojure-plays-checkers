@@ -45,7 +45,10 @@ digraph funtions {
         "compute-jumps" -> "compute-jump";
         "compute-jumps" -> "jumps-to-path";
 
-        "moves-of-pos-complex" -> "compute-jumps";
+        "compute-jumps2" -> "compute-jump";
+        "compute-jumps2" -> "jumps-to-path";
+
+        "moves-of-pos-complex" -> "compute-jumps2";
         "moves-of-pos-complex" -> "possible-jumps";
 
         "moves-of-pos" -> "moves-of-pos-simple";
@@ -91,6 +94,9 @@ digraph funtions {
         "new-board-fn"[bgcolor=grey color=grey style=filled];
         "new-board-mat"[bgcolor=grey color=grey style=filled];
         "mat-coords"[bgcolor=grey color=grey style=filled];
+
+
+        "compute-jumps2"[bgcolor=green color=green style=filled];
 
 /******************************************************************************
  *                         legend                                             *         
