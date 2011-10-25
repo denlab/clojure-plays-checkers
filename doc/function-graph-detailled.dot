@@ -1,0 +1,110 @@
+digraph funtions {
+
+/******************************************************************************
+ *                         edges                                              *         
+ ******************************************************************************/
+
+        "new-board-fn" -> "mat-coord";
+        "new-board-fn" -> "new-board-mat";
+        
+        "new-board" -> "new-board-fn";
+
+        "in-bound?" -> "in-bound-one?";
+
+        "neighboors" -> "in-bound?";
+
+        "neighboors-of-piece" -> "neighboors";
+
+        "empty-neighboors-of-piece" -> "neighboors-of-piece";
+
+        "mv-cell" -> "rm-cell";
+        "mv-cell" -> "add-cell";
+
+        "compute-board-simple" -> "mv-cell";
+        "compute-board-simple" -> "next-player";
+
+        "moves-of-pos-simple" -> "compute-board-simple";
+        "moves-of-pos-simple" ->  "empty-neighboors-of-piece";
+        
+        "neighboors-for-jump" -> "neighboors-for-jump-may-be-out-of-bound";
+
+        "jumpable?" -> "next-player";
+
+        "possible-jumps" -> "jumpable?";
+        "possible-jumps" -> "neighboors-for-jump";
+
+        "jump-cell" -> "rm-cell";
+        "jump-cell" -> "mv-cell";
+
+        "king-at-pos?" -> "king?";
+
+        "compute-jump" -> "jump-cell";
+        "compute-jump" -> "possible-jumps";
+        "compute-jump" -> "king-at-pos?";
+
+        "compute-jumps" -> "compute-jump";
+        "compute-jumps" -> "jumps-to-path";
+
+        "moves-of-pos-complex" -> "compute-jumps";
+        "moves-of-pos-complex" -> "possible-jumps";
+
+        "moves-of-pos" -> "moves-of-pos-simple";
+        "moves-of-pos" -> "moves-of-pos-complex";
+
+        "coord-of-player?" -> "piece-of-player?";
+
+        "coords-of-player" -> "coord-of-player?";
+
+        "moves" -> "moves-of-pos";
+        "moves" -> "coords-of-player";
+
+/******************************************************************************
+ *                         nodes                                              *         
+ ******************************************************************************/
+
+        "moves"[bgcolor=green color=green style=filled];
+        "coords-of-player"[bgcolor=green color=green style=filled];
+        "moves-of-pos"[bgcolor=green color=green style=filled];
+        "moves-of-pos-complex"[bgcolor=green color=green style=filled];
+        "moves-of-pos-simple"[bgcolor=green color=green style=filled];
+        "compute-board-simple"[bgcolor=green color=green style=filled];
+        "mv-cell"[bgcolor=green color=green style=filled];
+        "add-cell"[bgcolor=green color=green style=filled];
+        "rm-cell"[bgcolor=green color=green style=filled];
+        "empty-neighboors-of-piece"[bgcolor=green color=green style=filled];
+        "neighboors-of-piece"[bgcolor=green color=green style=filled];
+
+        "compute-jumps"[bgcolor=red color=red style=filled];
+        "compute-jump"[bgcolor=red color=red style=filled];
+        "jump-cell"[bgcolor=red color=red style=filled];
+        "possible-jumps"[bgcolor=red color=red style=filled];
+        "jumpable?"[bgcolor=red color=red style=filled];
+
+        "coord-of-player?"[bgcolor=grey color=grey style=filled];
+        "jumps-to-path"[bgcolor=grey color=grey style=filled];
+        "king-at-pos?"[bgcolor=grey color=grey style=filled];
+        "king?"[bgcolor=grey color=grey style=filled];
+        "neighboors-for-jump"[bgcolor=grey color=grey style=filled];
+        "neighboors-for-jump-may-be-out-of-bound"[bgcolor=grey color=grey style=filled];
+        "neighboors"[bgcolor=grey color=grey style=filled];
+        "new-board"[bgcolor=grey color=grey style=filled];
+        "new-board-fn"[bgcolor=grey color=grey style=filled];
+        "new-board-mat"[bgcolor=grey color=grey style=filled];
+        "mat-coords"[bgcolor=grey color=grey style=filled];
+
+/******************************************************************************
+ *                         legend                                             *         
+ ******************************************************************************/
+
+        "Takes a\npseudo-graph"[bgcolor=red color=red style=filled];
+        "Takes a\ngraph"[bgcolor=green color=green style=filled];
+//        "Takes\nother"[bgcolor="#94003f" color="#94003f" style=filled];
+        "Takes\nother"[bgcolor=grey color=grey style=filled];
+
+        subgraph "cluster-legend" {
+                "Takes a\npseudo-graph";
+                "Takes a\ngraph";
+                "Takes\nother";
+        }
+
+}

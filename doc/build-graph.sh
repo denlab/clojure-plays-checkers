@@ -4,4 +4,7 @@
 # Build the graph image from the .dot file
 # ---------------------------------------------------------------------------
 
-dot -Tpng function-graph.dot -o function-graph.png
+for I in *.dot
+do 
+    dot -Tpng "$I" -o "$I".png
+done
