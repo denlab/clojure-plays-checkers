@@ -36,6 +36,9 @@ digraph funtions {
         "jump-cell" -> "rm-cell";
         "jump-cell" -> "mv-cell";
 
+        "jump-cell2" -> "rm-cell";
+        "jump-cell2" -> "mv-cell";
+
         "king-at-pos?" -> "king?";
 
         "compute-jump" -> "jump-cell";
@@ -77,6 +80,7 @@ digraph funtions {
         "compute-jump"[bgcolor=green color=green style=filled];
 
         "jump-cell"[bgcolor=red color=red style=filled];
+        "jump-cell2"[bgcolor=green color=green style=filled];
         "possible-jumps"[bgcolor=red color=red style=filled];
         "jumpable?"[bgcolor=red color=red style=filled];
 

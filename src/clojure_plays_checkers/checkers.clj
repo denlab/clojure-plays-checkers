@@ -425,6 +425,18 @@
     (rm-cell :bd-mat :r)                   => :bd-mat1
     (mv-cell :bd-mat1 :size :player :s :d) => :bd-mat2))
 
+(defn jump-cell2
+  [bd {:keys [src dst remove]}]
+  (-> bd
+      (rm-cell remove)
+      (mv-cell src dst)))
+
+(fact "jump-cell2"
+      (jump-cell2 :bd {:src :s, :dst :d, :remove :r}) => :bd2
+      (provided
+       (rm-cell :bd  :r)    => :bd1
+       (mv-cell :bd1 :s :d) => :bd2))
+
 (defn king?
   [piece]  (or (= piece :b-king)
                (= piece :w-king)))
