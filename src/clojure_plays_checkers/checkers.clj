@@ -442,7 +442,7 @@
       (king-at-pos? [[:piece]] [0 0]) => :result
       (provided (king? :piece) => :result))
 
-(defn compute-jump2
+(defn compute-jump
   [jump {:keys [board size player]}]
   (let [bd-mat board]
     (loop [to-visit [[[jump] bd-mat]] acc {}]
@@ -458,20 +458,20 @@
                                 next-jumps)
                            (next to-visit)) acc)))))))
 
-(fact "compute-jump2 if the jump leads to a kingification, stop there"
+(fact "compute-jump if the jump leads to a kingification, stop there"
       (let [jmp     {:dst [0 0]}
             bd-mat1 [[:piece]]]
-        (compute-jump2 jmp {:board :bd-mat :size :size :player :player}) => {[jmp] bd-mat1}
+        (compute-jump jmp {:board :bd-mat :size :size :player :player}) => {[jmp] bd-mat1}
         (provided
          (jump-cell :bd-mat :size :player jmp)        => bd-mat1
          (possible-jumps [0 0] bd-mat1 :size :player) => [:jmp1 :jmp2]
          (king-at-pos? bd-mat1 [0 0])                               => true)))
 
-(fact "compute-jump2 two jumps due to a branch"
+(fact "compute-jump two jumps due to a branch"
   (let [jmp  {:src :s , :dst :d , :remove :r }
         jmp1 {:src :s1, :dst :d1, :remove :r1}
         jmp2 {:src :d1, :dst :d2, :remove :r2}]
-    (compute-jump2 jmp {:board :bd-mat :size :size :player :player}) => {[jmp jmp1] :bd-mat1,
+    (compute-jump jmp {:board :bd-mat :size :size :player :player}) => {[jmp jmp1] :bd-mat1,
                                                  [jmp jmp2] :bd-mat2}
     (provided
       (jump-cell :bd-mat :size :player jmp)      => :bd-mat0
@@ -486,10 +486,10 @@
       (king-at-pos? :bd-mat2 :d2) => false
       (possible-jumps :d2 :bd-mat2 :size :player) => [])))
 
-(fact "compute-jump2 one jump of length two"
+(fact "compute-jump one jump of length two"
   (let [jmp1 {:src :s1, :dst :d1, :remove :r1}
         jmp2 {:src :d1, :dst :d2, :remove :r2}]
-    (compute-jump2 jmp1 {:board :bd-mat1 :size :size :player :player}) => {[jmp1 jmp2] :bd-mat3}
+    (compute-jump jmp1 {:board :bd-mat1 :size :size :player :player}) => {[jmp1 jmp2] :bd-mat3}
     (provided
       (jump-cell :bd-mat1 :size :player jmp1)     => :bd-mat2
       (king-at-pos? :bd-mat2 :d1) => false
@@ -499,9 +499,9 @@
       (king-at-pos? :bd-mat3 :d2) => false
       (possible-jumps :d2 :bd-mat3 :size :player) => [])))
 
-(fact "compute-jump2 simple: only one jump"
+(fact "compute-jump simple: only one jump"
   (let [jmp {:src :s :dst :d :remove :r}]
-    (compute-jump2 jmp {:board :bd-mat1 :size :size :player :player}) => {[jmp] :bd-mat2}
+    (compute-jump jmp {:board :bd-mat1 :size :size :player :player}) => {[jmp] :bd-mat2}
     (provided
       (jump-cell :bd-mat1 :size :player jmp)     => :bd-mat2
       (king-at-pos? :bd-mat2 :d)                 => false
@@ -526,7 +526,7 @@
 (defn compute-jumps
   [jumps {:keys [board size player] :as full-board}]
   (reduce merge
-          (map (fn [j] (let [jumps->bds (compute-jump2 j full-board)]
+          (map (fn [j] (let [jumps->bds (compute-jump j full-board)]
                         (zipmap (map jumps-to-path (keys jumps->bds))
                                 (vals jumps->bds))))
                jumps)))
@@ -537,10 +537,10 @@
           :path-b1 :bd-b1
           :path-b2 :bd-b2}
       (provided
-       (compute-jump2 :jmp-a {:board :bd-mat :size :size :player :player}) => {:jumps-a :bd-a}
+       (compute-jump :jmp-a {:board :bd-mat :size :size :player :player}) => {:jumps-a :bd-a}
        (jumps-to-path :jumps-a)                    => :path-a
     
-       (compute-jump2 :jmp-b {:board :bd-mat :size :size :player :player}) => {:jumps-b1 :bd-b1
+       (compute-jump :jmp-b {:board :bd-mat :size :size :player :player}) => {:jumps-b1 :bd-b1
                                                                                :jumps-b2 :bd-b2}
        (jumps-to-path :jumps-b1)                   => :path-b1
        (jumps-to-path :jumps-b2)                   => :path-b2))
