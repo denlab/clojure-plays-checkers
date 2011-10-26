@@ -42,6 +42,10 @@ digraph funtions {
         "compute-jump" -> "possible-jumps";
         "compute-jump" -> "king-at-pos?";
 
+        "compute-jump2" -> "jump-cell";
+        "compute-jump2" -> "possible-jumps";
+        "compute-jump2" -> "king-at-pos?";
+
         "compute-jumps" -> "compute-jump2";
         "compute-jumps" -> "jumps-to-path";
 
