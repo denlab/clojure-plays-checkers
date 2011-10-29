@@ -725,5 +725,7 @@
                             . . .
                             . . .)}))
 
+'(future-fact"NEXT JOB TO DO: BRANCH COMPUTE-JUMP ON JUMP-CELL2
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
 
 (println "--------- END OF CHECKERS ----------" (java.util.Date.))
