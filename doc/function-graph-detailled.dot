@@ -76,7 +76,7 @@ digraph funtions {
 
         "compute-jump"[bgcolor=green color=green style=filled];
 
-        "jump-cell"[bgcolor=red color=red style=filled];
+        "jump-cell"[bgcolor=green color=green style=filled];
         "possible-jumps"[bgcolor=red color=red style=filled];
         "jumpable?"[bgcolor=red color=red style=filled];
 
