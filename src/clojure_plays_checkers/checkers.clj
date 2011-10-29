@@ -413,14 +413,14 @@
     (jumpable? :coord-n-a :coord-n2-a :bd-mat :player1) => false
     (jumpable? :coord-n-b :coord-n2-b :bd-mat :player1) => true))
 
-(defn jump-cell2
+(defn jump-cell
   [bd {:keys [src dst remove]}]
   (-> bd
       (rm-cell remove)
       (mv-cell src dst)))
 
-(fact "jump-cell2"
-      (jump-cell2 :bd {:src :s, :dst :d, :remove :r}) => :bd2
+(fact "jump-cell"
+      (jump-cell :bd {:src :s, :dst :d, :remove :r}) => :bd2
       (provided
        (rm-cell :bd  :r)    => :bd1
        (mv-cell :bd1 :s :d) => :bd2))
@@ -450,7 +450,7 @@
         acc
         (let [[f-jumps f-bd]            (first to-visit)
               {:keys [dst] :as f-last-jump} (last f-jumps)
-              {next-bd-mat :board :as next-bd} (jump-cell2 f-bd f-last-jump)
+              {next-bd-mat :board :as next-bd} (jump-cell f-bd f-last-jump)
               next-jumps                    (possible-jumps dst next-bd-mat size player)]
           (if (or (king-at-pos? next-bd-mat dst) (empty? next-jumps))
             (recur (next to-visit) (conj acc [f-jumps next-bd]))
@@ -463,7 +463,7 @@
             bd-mat1 [[:piece]]]
         (compute-jump jmp {:board :bd-mat :size :size :player :player}) => {[jmp] {:board bd-mat1}}
         (provided
-          (jump-cell2 {:board :bd-mat :size :size :player :player} jmp)        => {:board bd-mat1}
+          (jump-cell {:board :bd-mat :size :size :player :player} jmp)        => {:board bd-mat1}
          (possible-jumps [0 0] bd-mat1 :size :player) => [:jmp1 :jmp2]
          (king-at-pos? bd-mat1 [0 0])                               => true)))
 
@@ -474,15 +474,15 @@
     (compute-jump jmp {:board :bd-mat :size :size :player :player}) => {[jmp jmp1] {:board :bd-mat1}
                                                                         [jmp jmp2] {:board :bd-mat2}}
     (provided
-      (jump-cell2 {:board :bd-mat :size :size :player :player} jmp)      => {:board :bd-mat0}
+      (jump-cell {:board :bd-mat :size :size :player :player} jmp)      => {:board :bd-mat0}
       (king-at-pos? :bd-mat0 :d) => false
       (possible-jumps :d :bd-mat0 :size :player) => [jmp1 jmp2]
 
-      (jump-cell2 {:board :bd-mat0} jmp1)     => {:board :bd-mat1}
+      (jump-cell {:board :bd-mat0} jmp1)     => {:board :bd-mat1}
       (king-at-pos? :bd-mat1 :d1) => false
       (possible-jumps :d1 :bd-mat1 :size :player) => []
 
-      (jump-cell2 {:board :bd-mat0} jmp2)     => {:board :bd-mat2}
+      (jump-cell {:board :bd-mat0} jmp2)     => {:board :bd-mat2}
       (king-at-pos? :bd-mat2 :d2) => false
       (possible-jumps :d2 :bd-mat2 :size :player) => [])))
 
@@ -491,11 +491,11 @@
         jmp2 {:src :d1, :dst :d2, :remove :r2}]
     (compute-jump jmp1 {:board :bd-mat1 :size :size :player :player}) => {[jmp1 jmp2] {:board :bd-mat3}}
     (provided
-      (jump-cell2 {:board :bd-mat1 :size :size :player :player} jmp1)     => {:board :bd-mat2}
+      (jump-cell {:board :bd-mat1 :size :size :player :player} jmp1)     => {:board :bd-mat2}
       (king-at-pos? :bd-mat2 :d1) => false
       (possible-jumps :d1 :bd-mat2 :size :player) => [jmp2]
 
-      (jump-cell2 {:board :bd-mat2} jmp2)     => {:board :bd-mat3}
+      (jump-cell {:board :bd-mat2} jmp2)     => {:board :bd-mat3}
       (king-at-pos? :bd-mat3 :d2) => false
       (possible-jumps :d2 :bd-mat3 :size :player) => [])))
 
@@ -503,7 +503,7 @@
   (let [jmp {:src :s :dst :d :remove :r}]
     (compute-jump jmp {:board :bd-mat1 :size :size :player :player}) => {[jmp] {:board :bd-mat2}}
     (provided
-      (jump-cell2 {:board :bd-mat1 :size :size :player :player} jmp)     => {:board :bd-mat2}
+      (jump-cell {:board :bd-mat1 :size :size :player :player} jmp)     => {:board :bd-mat2}
       (king-at-pos? :bd-mat2 :d)                 => false
       (possible-jumps :d :bd-mat2 :size :player) => [])))
 
