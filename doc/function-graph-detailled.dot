@@ -49,7 +49,7 @@ digraph funtions {
         "compute-jump2" -> "possible-jumps";
         "compute-jump2" -> "king-at-pos?";
 
-        "compute-jumps" -> "compute-jump";
+        "compute-jumps" -> "compute-jump2";
         "compute-jumps" -> "jumps-to-path";
 
         "moves-of-pos-complex" -> "compute-jumps";

@@ -602,7 +602,7 @@
 (defn compute-jumps
   [jumps {:keys [board size player] :as full-board}]
   (reduce merge
-          (map (fn [j] (let [jumps->bds (compute-jump j full-board)]
+          (map (fn [j] (let [jumps->bds (compute-jump2 j full-board)]
                         (zipmap (map jumps-to-path (keys jumps->bds))
                                 (vals jumps->bds))))
                jumps)))
@@ -613,10 +613,10 @@
           :path-b1 :bd-b1
           :path-b2 :bd-b2}
       (provided
-       (compute-jump :jmp-a {:board :bd-mat :size :size :player :player}) => {:jumps-a :bd-a}
+       (compute-jump2 :jmp-a {:board :bd-mat :size :size :player :player}) => {:jumps-a :bd-a}
        (jumps-to-path :jumps-a)                    => :path-a
     
-       (compute-jump :jmp-b {:board :bd-mat :size :size :player :player}) => {:jumps-b1 :bd-b1
+       (compute-jump2 :jmp-b {:board :bd-mat :size :size :player :player}) => {:jumps-b1 :bd-b1
                                                                                :jumps-b2 :bd-b2}
        (jumps-to-path :jumps-b1)                   => :path-b1
        (jumps-to-path :jumps-b2)                   => :path-b2))
