@@ -49,9 +49,6 @@ digraph funtions {
         "compute-jumps" -> "compute-jump";
         "compute-jumps" -> "jumps-to-path";
 
-        "moves-of-pos-complex" -> "compute-jumps";
-        "moves-of-pos-complex" -> "possible-jumps";
-
         "moves-of-pos-complex2" -> "compute-jumps";
         "moves-of-pos-complex2" -> "possible-jumps2";
 
@@ -72,7 +69,6 @@ digraph funtions {
         "moves"[bgcolor=green color=green style=filled];
         "coords-of-player"[bgcolor=green color=green style=filled];
         "moves-of-pos"[bgcolor=green color=green style=filled];
-        "moves-of-pos-complex"[bgcolor=green color=green style=filled];
         "moves-of-pos-complex2"[bgcolor=green color=green style=filled];
         "moves-of-pos-simple"[bgcolor=green color=green style=filled];
         "compute-board-simple"[bgcolor=green color=green style=filled];

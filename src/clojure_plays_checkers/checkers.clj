@@ -565,26 +565,6 @@
        (jumps-to-path :jumps-b2)                   => :path-b2))
 
 
-(defn moves-of-pos-complex
-  [coord {:keys [board size player] :as full-bd}]
-  (compute-jumps (possible-jumps coord board size player)
-                  full-bd))
-
-(future-fact "fix here: the player is not switched")
-
-(fact
-  (let [bd {:board :bd-mat, :size :sz, :player :p1}]
-    (moves-of-pos-complex :coord bd) => {:path1 :bd1, :path2 :bd2}
-    (provided
-      (possible-jumps :coord :bd-mat :sz :p1) => [:j1 :j2]
-      (compute-jumps [:j1 :j2] {:board :bd-mat :size :sz :player :p1})   => {:path1 :bd1, :path2 :bd2})))
-
-(fact "moves-of-pos-complex: integration test: can't move because of friend"
-  (moves-of-pos-complex [1 0] (new-board :b
-                                         . x
-                                         x .))
-  => nil)
-
 (defn moves-of-pos-complex2
   [coord bd] (compute-jumps (possible-jumps2 coord bd)
                             bd))
