@@ -295,7 +295,7 @@
                      . . .))
 
 (defn moves-of-pos-simple
-  [coord {:keys [size player] :as board}]
+  [coord board]
   (reduce
    (fn [m v] (if-let [next-bd (compute-board-simple board coord v)]
               (conj m [[coord v] next-bd])
@@ -423,20 +423,20 @@
       (provided (king? :piece) => :result))
 
 (defn compute-jump
-  [jump {:keys [board size player] :as bd-full}]
-  (let [bd-mat board]
-    (loop [to-visit [[[jump] bd-full]] acc {}]
-      (if (empty? to-visit)
-        acc
-        (let [[f-jumps f-bd]            (first to-visit)
-              {:keys [dst] :as f-last-jump} (last f-jumps)
-              {next-bd-mat :board :as next-bd} (jump-cell f-bd f-last-jump)
-              next-jumps                    (possible-jumps dst next-bd)]
-          (if (or (king-at-pos? next-bd-mat dst) (empty? next-jumps))
-            (recur (next to-visit) (conj acc [f-jumps next-bd]))
-            (recur (concat (map (fn [j] [(conj f-jumps j) next-bd])
-                                next-jumps)
-                           (next to-visit)) acc)))))))
+  [jump bd]
+  (loop [to-visit [[[jump] bd]] acc {}]
+    (if (empty? to-visit)
+      acc
+      (let [[f-jumps f-bd]                   (first to-visit)
+            {:keys [dst] :as f-last-jump}    (last f-jumps)
+            {next-bd-mat :board :as next-bd} (jump-cell f-bd f-last-jump)
+            next-jumps                       (possible-jumps dst next-bd)]
+        (if (or (king-at-pos? next-bd-mat dst) (empty? next-jumps))
+          (recur (next to-visit)
+                 (conj acc [f-jumps next-bd]))
+          (recur (concat (map (fn [j] [(conj f-jumps j) next-bd])
+                              next-jumps)
+                         (next to-visit)) acc))))))
 
 (fact "compute-jump if the jump leads to a kingification, stop there"
       (let [jmp     {:dst [0 0]}
@@ -503,9 +503,9 @@
     {:src :d2 :dst :d3 :remove :r3}]) => [:s1 :d1 :d2 :d3])
 
 (defn compute-jumps
-  [jumps {:keys [board size player] :as full-board}]
+  [jumps bd]
   (reduce merge
-          (map (fn [j] (let [jumps->bds (compute-jump j full-board)]
+          (map (fn [j] (let [jumps->bds (compute-jump j bd)]
                         (zipmap (map jumps-to-path (keys jumps->bds))
                                 (vals jumps->bds))))
                jumps)))
