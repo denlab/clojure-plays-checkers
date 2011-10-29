@@ -43,7 +43,7 @@ digraph funtions {
         "king-at-pos?" -> "king?";
 
         "compute-jump" -> "jump-cell";
-        "compute-jump" -> "possible-jumps";
+        "compute-jump" -> "possible-jumps2";
         "compute-jump" -> "king-at-pos?";
 
         "compute-jumps" -> "compute-jump";
