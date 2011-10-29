@@ -350,27 +350,6 @@
     (in-bound? :cn3 :size) => true
     (in-bound? :cn4 :size) => true))
 
-(defn jumpable?
-  [next-coord next-coord2 board-mat player]
-  (and (=    (get-in board-mat next-coord) (next-player player))
-       (nil? (get-in board-mat next-coord2))))
-
-(tabular
- (fact (jumpable? [1 1] [2 2] ?bd-mat :b) => ?expected)
- ?bd-mat         ?expected
-
- [[:b  nil nil]
-  [nil :w  nil]
-  [nil nil nil]] true
-
-  [[:b  nil nil]
-  [nil :x  nil]
-  [nil nil nil]] false
-
-  [[:b  nil nil]
-  [nil :w  nil]
-  [nil nil :x]] false)
-
 (defn jumpable2?
   [next-coord next-coord2 {:keys [board player]}]
   (and (=    (get-in board next-coord) (next-player player))
@@ -393,25 +372,6 @@
   [nil nil :x]] false)
 
 (future-fact "refactoring in progress: plug jumpable2 when other are ready")
-
-(defn possible-jumps
-  [coord board-mat size player]
-  (reduce (fn [m {:keys [next next2]}]
-            (if (jumpable? next next2 board-mat player)
-              (conj m {:src coord, :dst next2, :remove next})
-              m))
-          []
-          (neighboors-for-jump coord size)))
-
-(fact
-  (possible-jumps :coord :bd-mat :size :player1) => [{:src    :coord
-                                                      :dst    :coord-n2-b
-                                                      :remove :coord-n-b}]
-  (provided
-    (neighboors-for-jump :coord :size) => [{:next :coord-n-a, :next2 :coord-n2-a}
-                                           {:next :coord-n-b, :next2 :coord-n2-b}]
-    (jumpable? :coord-n-a :coord-n2-a :bd-mat :player1) => false
-    (jumpable? :coord-n-b :coord-n2-b :bd-mat :player1) => true))
 
 (defn possible-jumps2
   [coord bd]
