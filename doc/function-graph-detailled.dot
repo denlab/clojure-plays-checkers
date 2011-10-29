@@ -34,6 +34,9 @@ digraph funtions {
         "possible-jumps" -> "jumpable?";
         "possible-jumps" -> "neighboors-for-jump";
 
+        "possible-jumps2" -> "jumpable2?";
+        "possible-jumps2" -> "neighboors-for-jump";
+
         "jump-cell" -> "rm-cell";
         "jump-cell" -> "mv-cell";
 
@@ -79,6 +82,7 @@ digraph funtions {
 
         "jump-cell"[bgcolor=green color=green style=filled];
         "possible-jumps"[bgcolor=red color=red style=filled];
+        "possible-jumps2"[bgcolor=green color=green style=filled];
         "jumpable?"[bgcolor=red color=red style=filled];
         "jumpable2?"[bgcolor=green color=green style=filled];
 

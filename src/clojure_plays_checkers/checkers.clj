@@ -413,6 +413,26 @@
     (jumpable? :coord-n-a :coord-n2-a :bd-mat :player1) => false
     (jumpable? :coord-n-b :coord-n2-b :bd-mat :player1) => true))
 
+(defn possible-jumps2
+  [coord bd]
+  (reduce (fn [m {:keys [next next2]}]
+            (if (jumpable2? next next2 bd)
+              (conj m {:src coord, :dst next2, :remove next})
+              m))
+          []
+          (neighboors-for-jump coord (:size bd))))
+
+(future-fact "test below is simplifiable:)")
+(fact
+  (possible-jumps2 :coord {:board :bd-mat :size :size :player :player1}) => [{:src    :coord
+                                                                              :dst    :coord-n2-b
+                                                                              :remove :coord-n-b}]
+  (provided
+    (neighboors-for-jump :coord :size) => [{:next :coord-n-a, :next2 :coord-n2-a}
+                                           {:next :coord-n-b, :next2 :coord-n2-b}]
+    (jumpable2? :coord-n-a :coord-n2-a {:board :bd-mat :size :size :player :player1}) => false
+    (jumpable2? :coord-n-b :coord-n2-b {:board :bd-mat :size :size :player :player1}) => true))
+
 (defn jump-cell
   [bd {:keys [src dst remove]}]
   (-> bd
