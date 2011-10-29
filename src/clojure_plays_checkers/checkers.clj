@@ -585,6 +585,18 @@
                                          x .))
   => nil)
 
+(defn moves-of-pos-complex2
+  [coord bd] (compute-jumps (possible-jumps2 coord bd)
+                            bd))
+
+(future-fact "fix here: the player is not switched")
+
+(fact
+  (moves-of-pos-complex2 :coord :bd) => {:path1 :bd1, :path2 :bd2}
+  (provided
+    (possible-jumps2 :coord :bd)  => [:j1 :j2]
+    (compute-jumps [:j1 :j2] :bd) => {:path1 :bd1, :path2 :bd2}))
+
 (defn moves-of-pos
   [coord board] (merge (moves-of-pos-simple  coord board)
                        (moves-of-pos-complex coord board)))
