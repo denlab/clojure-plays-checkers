@@ -599,25 +599,13 @@
 
 (defn moves-of-pos
   [coord board] (merge (moves-of-pos-simple  coord board)
-                       (moves-of-pos-complex coord board)))
+                       (moves-of-pos-complex2 coord board)))
 
 (fact "moves-of-pos"
       (moves-of-pos :coord :board) => {:path1 :bd1, :path2 :bd2, :path3 :bd3}
       (provided
        (moves-of-pos-simple  :coord :board) => {:path1 :bd1}
-       (moves-of-pos-complex :coord :board) => {:path2 :bd2, :path3, :bd3}))
-
-(fact "moves-of-pos: itest: can't move because of friend"
-  (moves-of-pos [1 0] (new-board :b
-                                 . x
-                                 x .))
-  => {})
-
-(fact "moves-of-pos: itest: can't move because of friend"
-  (moves-of-pos [1 0] (new-board :b
-                                 . x
-                                 x .))
-  => {})
+       (moves-of-pos-complex2 :coord :board) => {:path2 :bd2, :path3, :bd3}))
 
 (defn piece-of-player?
   [piece player] (case player

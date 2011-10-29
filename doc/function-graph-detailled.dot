@@ -56,7 +56,7 @@ digraph funtions {
         "moves-of-pos-complex2" -> "possible-jumps2";
 
         "moves-of-pos" -> "moves-of-pos-simple";
-        "moves-of-pos" -> "moves-of-pos-complex";
+        "moves-of-pos" -> "moves-of-pos-complex2";
 
         "coord-of-player?" -> "piece-of-player?";
 
