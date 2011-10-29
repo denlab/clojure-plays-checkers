@@ -28,10 +28,10 @@ digraph funtions {
         
         "neighboors-for-jump" -> "neighboors-for-jump-may-be-out-of-bound";
 
-        "jumpable2?" -> "next-player";
+        "jumpable?" -> "next-player";
 
-        "possible-jumps2" -> "jumpable2?";
-        "possible-jumps2" -> "neighboors-for-jump";
+        "possible-jumps" -> "jumpable?";
+        "possible-jumps" -> "neighboors-for-jump";
 
         "jump-cell" -> "rm-cell";
         "jump-cell" -> "mv-cell";
@@ -39,14 +39,14 @@ digraph funtions {
         "king-at-pos?" -> "king?";
 
         "compute-jump" -> "jump-cell";
-        "compute-jump" -> "possible-jumps2";
+        "compute-jump" -> "possible-jumps";
         "compute-jump" -> "king-at-pos?";
 
         "compute-jumps" -> "compute-jump";
         "compute-jumps" -> "jumps-to-path";
 
         "moves-of-pos-complex" -> "compute-jumps";
-        "moves-of-pos-complex" -> "possible-jumps2";
+        "moves-of-pos-complex" -> "possible-jumps";
 
         "moves-of-pos" -> "moves-of-pos-simple";
         "moves-of-pos" -> "moves-of-pos-complex";
@@ -77,8 +77,8 @@ digraph funtions {
         "compute-jump"[bgcolor=green color=green style=filled];
 
         "jump-cell"[bgcolor=green color=green style=filled];
-        "possible-jumps2"[bgcolor=green color=green style=filled];
-        "jumpable2?"[bgcolor=green color=green style=filled];
+        "possible-jumps"[bgcolor=green color=green style=filled];
+        "jumpable?"[bgcolor=green color=green style=filled];
 
         "coord-of-player?"[bgcolor=grey color=grey style=filled];
         "jumps-to-path"[bgcolor=grey color=grey style=filled];
