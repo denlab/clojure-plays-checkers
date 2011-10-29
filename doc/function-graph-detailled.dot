@@ -49,11 +49,11 @@ digraph funtions {
         "compute-jumps" -> "compute-jump";
         "compute-jumps" -> "jumps-to-path";
 
-        "moves-of-pos-complex2" -> "compute-jumps";
-        "moves-of-pos-complex2" -> "possible-jumps2";
+        "moves-of-pos-complex" -> "compute-jumps";
+        "moves-of-pos-complex" -> "possible-jumps2";
 
         "moves-of-pos" -> "moves-of-pos-simple";
-        "moves-of-pos" -> "moves-of-pos-complex2";
+        "moves-of-pos" -> "moves-of-pos-complex";
 
         "coord-of-player?" -> "piece-of-player?";
 
@@ -69,7 +69,7 @@ digraph funtions {
         "moves"[bgcolor=green color=green style=filled];
         "coords-of-player"[bgcolor=green color=green style=filled];
         "moves-of-pos"[bgcolor=green color=green style=filled];
-        "moves-of-pos-complex2"[bgcolor=green color=green style=filled];
+        "moves-of-pos-complex"[bgcolor=green color=green style=filled];
         "moves-of-pos-simple"[bgcolor=green color=green style=filled];
         "compute-board-simple"[bgcolor=green color=green style=filled];
         "mv-cell"[bgcolor=green color=green style=filled];

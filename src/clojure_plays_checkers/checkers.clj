@@ -565,27 +565,27 @@
        (jumps-to-path :jumps-b2)                   => :path-b2))
 
 
-(defn moves-of-pos-complex2
+(defn moves-of-pos-complex
   [coord bd] (compute-jumps (possible-jumps2 coord bd)
                             bd))
 
 (future-fact "fix here: the player is not switched")
 
 (fact
-  (moves-of-pos-complex2 :coord :bd) => {:path1 :bd1, :path2 :bd2}
+  (moves-of-pos-complex :coord :bd) => {:path1 :bd1, :path2 :bd2}
   (provided
     (possible-jumps2 :coord :bd)  => [:j1 :j2]
     (compute-jumps [:j1 :j2] :bd) => {:path1 :bd1, :path2 :bd2}))
 
 (defn moves-of-pos
   [coord board] (merge (moves-of-pos-simple  coord board)
-                       (moves-of-pos-complex2 coord board)))
+                       (moves-of-pos-complex coord board)))
 
 (fact "moves-of-pos"
       (moves-of-pos :coord :board) => {:path1 :bd1, :path2 :bd2, :path3 :bd3}
       (provided
        (moves-of-pos-simple  :coord :board) => {:path1 :bd1}
-       (moves-of-pos-complex2 :coord :board) => {:path2 :bd2, :path3, :bd3}))
+       (moves-of-pos-complex :coord :board) => {:path2 :bd2, :path3, :bd3}))
 
 (defn piece-of-player?
   [piece player] (case player
