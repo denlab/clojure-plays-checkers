@@ -371,8 +371,6 @@
   [nil :w  nil]
   [nil nil :x]] false)
 
-(future-fact "refactoring in progress: plug jumpable when other are ready")
-
 (defn possible-jumps
   [coord bd]
   (reduce (fn [m {:keys [next next2]}]
@@ -382,16 +380,16 @@
           []
           (neighboors-for-jump coord (:size bd))))
 
-(future-fact "test below is simplifiable:)")
 (fact
-  (possible-jumps :coord {:board :bd-mat :size :size :player :player1}) => [{:src    :coord
-                                                                              :dst    :coord-n2-b
-                                                                              :remove :coord-n-b}]
-  (provided
-    (neighboors-for-jump :coord :size) => [{:next :coord-n-a, :next2 :coord-n2-a}
-                                           {:next :coord-n-b, :next2 :coord-n2-b}]
-    (jumpable? :coord-n-a :coord-n2-a {:board :bd-mat :size :size :player :player1}) => false
-    (jumpable? :coord-n-b :coord-n2-b {:board :bd-mat :size :size :player :player1}) => true))
+  (let [bd {:size :s}]
+    (possible-jumps :coord bd) => [{:src    :coord
+                                    :dst    :coord-n2-b
+                                    :remove :coord-n-b}]
+    (provided
+      (neighboors-for-jump :coord :s) => [{:next :coord-n-a, :next2 :coord-n2-a}
+                                          {:next :coord-n-b, :next2 :coord-n2-b}]
+      (jumpable? :coord-n-a :coord-n2-a bd) => false
+      (jumpable? :coord-n-b :coord-n2-b bd) => true)))
 
 (defn jump-cell
   [bd {:keys [src dst remove]}]
