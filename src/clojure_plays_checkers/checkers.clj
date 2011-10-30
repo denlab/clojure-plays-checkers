@@ -165,11 +165,6 @@
   (provided
     (neighboors :sz [1 1]) => #{[0 0] [2 2]}))
 
-(fact "neighboors-of-piece itest can't move backward"
-  (neighboors-of-piece [0 1] (new-board :b
-                                        . x
-                                        . .)) => #{})
-
 (defn empty-neighboors-of-piece
   [coord {:keys [board] :as bd-full}]
   (filter #(nil? (get-in board %))
@@ -527,12 +522,10 @@
   [coord bd] (compute-jumps (possible-jumps coord bd)
                             bd))
 
-(future-fact "fix here: the player is not switched")
-
 (fact
   (moves-of-pos-complex :coord :bd) => {:path1 :bd1, :path2 :bd2}
   (provided
-    (possible-jumps :coord :bd)  => [:j1 :j2]
+    (possible-jumps :coord :bd)   => [:j1 :j2]
     (compute-jumps [:j1 :j2] :bd) => {:path1 :bd1, :path2 :bd2}))
 
 (defn moves-of-pos
