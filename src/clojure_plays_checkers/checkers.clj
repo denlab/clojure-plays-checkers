@@ -501,7 +501,6 @@
 (defn moves-of-pos-complex
   [coord bd] (compute-jumps (possible-jumps coord bd)
                             bd))
-
 (fact "moves-of-pos-complex"
   (moves-of-pos-complex :coord :bd) => {:path1 :bd1, :path2 :bd2}
   (provided
@@ -637,15 +636,75 @@
                     . o
                     x .)) => {})
 
-(future-fact "moves: itest jump simple"
-      (moves (new-board :b
-                        . . .
-                        . o .
-                        . . x)
-             => {[[2 2] [0 0]]
-                 (new-board :w
-                            x . .
-                            . . .
-                            . . .)}))
+(fact "moves: itest jump simple"
+  (moves (new-board :b
+                    . . .
+                    . o .
+                    . . x)) 
+  => {[[2 2] [0 0]]
+      (new-board :w
+                 K . .
+                 . . .
+                 . . .)})
+
+(fact "moves: itest jump of length 2"
+  (moves (new-board :b
+                    . . . . .
+                    . . . . .
+                    . . . . .
+                    . o . o .
+                    . . . . x)) 
+  => {[[4 4] [2 2] [4 0]]
+      (new-board :w
+                    . . . . .
+                    . . . . .
+                    . . . . .
+                    . . . . .
+                    x . . . .)})
+
+(fact "moves: itest jump with 2 possibilities"
+  (moves (new-board :b
+                    . . . . .
+                    . . . o .
+                    . . . . .
+                    . o . o .
+                    . . . . x)) 
+  => {[[4 4] [2 2] [4 0]]
+      (new-board :w
+                 . . . . .
+                 . . . o .
+                 . . . . .
+                 . . . . .
+                 x . . . .)
+      [[4 4] [2 2] [0 4]]
+      (new-board :w
+                 . . . . K
+                 . . . . .
+                 . . . . .
+                 . o . . .
+                 . . . . .)})
+
+(fact "moves: itest can't jump because there's 2 enemies"
+  (moves (new-board :b
+                    . . . . .
+                    . . . . .
+                    . . o . .
+                    . . . o .
+                    . . . . x)) 
+  => {})
+
+(fact "moves: itest combo jump stopped by a kingification"
+  (moves (new-board :b
+                    . . . . .
+                    . o . o .
+                    x . . . .
+                    . . . . .
+                    . . . . .)) 
+  => {[[2 0] [0 2]] (new-board :w
+                               . . K . .
+                               . . . o .
+                               . . . . .
+                               . . . . .
+                               . . . . .)})
 
 (println "--------- END OF CHECKERS ----------" (java.util.Date.))
