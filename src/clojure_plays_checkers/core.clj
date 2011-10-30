@@ -18,10 +18,9 @@
                    curr-fn black-fn
                    next-fn (interleave (repeat white-fn) (repeat black-fn))]
               (let [bd-n   (curr-fn curr-bd)
-                    winner (game-over? bd-n)]
-                (if winner
-                  winner
-                  (recur bd-n (first next-fn) (next next-fn)))))))
+                    winner (game-over? bd-n)] (if winner
+                                                winner
+                                                (recur bd-n (first next-fn) (next next-fn)))))))
 
 (fact "one-game : human white, computer plays, human plays and win"
   (one-game :w) => :w
