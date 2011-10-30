@@ -47,6 +47,9 @@ digraph funtions {
 
         "moves-of-pos-complex" -> "compute-jumps";
         "moves-of-pos-complex" -> "possible-jumps";
+        "moves-of-pos-complex" -> "set-board-next-player";
+        
+        "set-board-next-player" -> "next-player";
 
         "moves-of-pos" -> "moves-of-pos-simple";
         "moves-of-pos" -> "moves-of-pos-complex";
@@ -92,6 +95,7 @@ digraph funtions {
         "new-board-mat"[bgcolor=grey color=grey style=filled];
         "mat-coords"[bgcolor=grey color=grey style=filled];
 
+        "set-board-next-player"[bgcolor=green color=green style=filled];
 
         "compute-jumps"[bgcolor=green color=green style=filled];
 

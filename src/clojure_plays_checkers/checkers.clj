@@ -6,7 +6,7 @@
   (:import (java.text SimpleDateFormat))
   (:import (java.util Date)))
 
-(unfinished )
+(unfinished)
 
 (defn print-sym-fn-
   [body]
@@ -503,6 +503,7 @@
                                 (vals jumps->bds))))
                jumps)))
 
+(future-fact "test below simplifable")
 (fact "compute-jumps"
       (compute-jumps [:jmp-a :jmp-b] {:board :bd-mat, :size :size, :player :player})
       => {:path-a  :bd-a
@@ -517,16 +518,25 @@
        (jumps-to-path :jumps-b1)                   => :path-b1
        (jumps-to-path :jumps-b2)                   => :path-b2))
 
+(defn set-board-next-player
+  [b] (update-in b [:player] next-player))
+
+(fact (set-board-next-player {:player :p1}) => {:player :p2}
+  (provided (next-player :p1) => :p2))
 
 (defn moves-of-pos-complex
-  [coord bd] (compute-jumps (possible-jumps coord bd)
-                            bd))
+  [coord bd] (reduce (fn [m [p b]] (conj m [p (set-board-next-player b)]))
+                     {}
+                     (compute-jumps (possible-jumps coord bd)
+                                    bd)))
 
-(fact
-  (moves-of-pos-complex :coord :bd) => {:path1 :bd1, :path2 :bd2}
+(fact "moves-of-pos-complex"
+  (moves-of-pos-complex :coord :bd) => {:path1 :bd1n, :path2 :bd2n}
   (provided
     (possible-jumps :coord :bd)   => [:j1 :j2]
-    (compute-jumps [:j1 :j2] :bd) => {:path1 :bd1, :path2 :bd2}))
+    (compute-jumps [:j1 :j2] :bd) => {:path1 :bd1, :path2 :bd2}
+    (set-board-next-player :bd1)  => :bd1n
+    (set-board-next-player :bd2)  => :bd2n))
 
 (defn moves-of-pos
   [coord board] (merge (moves-of-pos-simple  coord board)
