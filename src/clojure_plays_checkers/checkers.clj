@@ -1,7 +1,7 @@
 (ns clojure-plays-checkers.checkers
   (:use     [midje.sweet])
   (:use     [clojure.pprint :only [pprint]])
-  (:use     [clojure.walk   :only [macroexpand-all]])
+  (:use     [clojure.walk   :only [walk macroexpand-all]])
   (:require [clojure.set     :as set])
   (:import (java.text SimpleDateFormat))
   (:import (java.util Date)))
@@ -474,25 +474,23 @@
 (defn compute-jumps
   [jumps bd]
   (reduce merge
-          (map (fn [j] (let [jumps->bds (compute-jump j bd)]
-                        (zipmap (map jumps-to-path (keys jumps->bds))
-                                (vals jumps->bds))))
+          (map (fn [j] (walk (fn [[j b]] [(jumps-to-path j) b])
+                            identity
+                            (compute-jump j bd)))
                jumps)))
 
-(future-fact "test below simplifable")
 (fact "compute-jumps"
-      (compute-jumps [:jmp-a :jmp-b] {:board :bd-mat, :size :size, :player :player})
-      => {:path-a  :bd-a
-          :path-b1 :bd-b1
-          :path-b2 :bd-b2}
-      (provided
-       (compute-jump :jmp-a {:board :bd-mat :size :size :player :player}) => {:jumps-a :bd-a}
-       (jumps-to-path :jumps-a)                    => :path-a
+  (compute-jumps [:jmp-a :jmp-b] :bd)
+  => {:path-a  :bd-a
+      :path-b1 :bd-b1
+      :path-b2 :bd-b2}
+  (provided
+    (compute-jump :jmp-a :bd) => {:jumps-a :bd-a}
+    (jumps-to-path :jumps-a)  => :path-a
     
-       (compute-jump :jmp-b {:board :bd-mat :size :size :player :player}) => {:jumps-b1 :bd-b1
-                                                                               :jumps-b2 :bd-b2}
-       (jumps-to-path :jumps-b1)                   => :path-b1
-       (jumps-to-path :jumps-b2)                   => :path-b2))
+    (compute-jump :jmp-b :bd) => {:jumps-b1 :bd-b1, :jumps-b2 :bd-b2}
+    (jumps-to-path :jumps-b1) => :path-b1
+    (jumps-to-path :jumps-b2) => :path-b2))
 
 (defn set-board-next-player
   [b] (update-in b [:player] next-player))
@@ -510,13 +508,11 @@
     (possible-jumps :coord :bd)   => [:j1 :j2]
     (compute-jumps [:j1 :j2] :bd) => {:path1 :bd1, :path2 :bd2}))
 
-(future-fact "create an update-map-vals fun, for below")
-
 (defn moves-of-pos
-  [coord board] (reduce (fn [m [p b]] (conj m [p (set-board-next-player b)]))
-                        {}
-                        (merge (moves-of-pos-simple  coord board)
-                               (moves-of-pos-complex coord board))))
+  [coord board] (walk (fn [[p b]] [p (set-board-next-player b)])
+                      identity
+                      (merge (moves-of-pos-simple  coord board)
+                             (moves-of-pos-complex coord board))))
 
 (fact "moves-of-pos"
       (moves-of-pos :coord :board) => {:path1 :bd1n, :path2 :bd2n, :path3 :bd3n}
