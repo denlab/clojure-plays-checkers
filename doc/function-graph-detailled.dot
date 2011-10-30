@@ -21,7 +21,7 @@ digraph funtions {
         "mv-cell" -> "add-cell";
 
         "compute-board-simple" -> "mv-cell";
-        "compute-board-simple" -> "next-player";
+        "compute-board-simple" -> "set-board-next-player";
 
         "moves-of-pos-simple" -> "compute-board-simple";
         "moves-of-pos-simple" ->  "empty-neighboors-of-piece";

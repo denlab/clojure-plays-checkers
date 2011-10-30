@@ -268,26 +268,13 @@
                      . o) [0 0] [1 1]) => (throws AssertionError))
 
 (defn compute-board-simple
-  [board src dst] (update-in (mv-cell board src dst)
-                             [:player]
-                             next-player))
+  [board src dst] (set-board-next-player (mv-cell board src dst)))
 
-(fact
- (compute-board-simple :bd :src :dst) => {:player :p2, :other-stuff :s}
- (provided
-  (mv-cell :bd :src :dst) => {:player :p1 :other-stuff :s}
-  (next-player :p1)       => :p2))
-
-(fact "compute-board-simple: itest simple mv on 3x3, todelete when ok"
-      (compute-board-simple (new-board :b
-                                       . . .
-                                       . . .
-                                       . . x)
-                            [2 2] [1 1])
-      => (new-board :w
-                     . . .
-                     . x .
-                     . . .))
+(fact "compute-board-simple"
+  (compute-board-simple :bd :src :dst) => :bd2n
+  (provided
+    (mv-cell :bd :src :dst)      => :bd2
+    (set-board-next-player :bd2) => :bd2n))
 
 (defn moves-of-pos-simple
   [coord board]
