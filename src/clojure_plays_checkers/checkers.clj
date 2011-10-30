@@ -268,13 +268,12 @@
                      . o) [0 0] [1 1]) => (throws AssertionError))
 
 (defn compute-board-simple
-  [board src dst] (set-board-next-player (mv-cell board src dst)))
+  [board src dst] (mv-cell board src dst))
 
 (fact "compute-board-simple"
-  (compute-board-simple :bd :src :dst) => :bd2n
+  (compute-board-simple :bd :src :dst) => :bd2
   (provided
-    (mv-cell :bd :src :dst)      => :bd2
-    (set-board-next-player :bd2) => :bd2n))
+    (mv-cell :bd :src :dst) => :bd2))
 
 (defn moves-of-pos-simple
   [coord board]
@@ -293,16 +292,6 @@
       (compute-board-simple bd :co :co1) => :bd2
       (compute-board-simple bd :co :co2) => :bd3
       (compute-board-simple bd :co :co3) => nil)))
-
-(fact "moves-of-pos-simple: itest simple mv on 3x3, todelete when ok"
-             (moves-of-pos-simple [2 2] (new-board :b
-                                                   . . .
-                                                   . . .
-                                                   . . x))
-             => {[[2 2] [1 1]] (new-board :w
-                                          . . .
-                                          . x .
-                                          . . .)})
 
 (defn neighboors-for-jump-may-be-out-of-bound
   [[y x] size] (let [y- (dec y) y+ (inc y) x- (dec x) x+ (inc x)]
@@ -512,28 +501,31 @@
   (provided (next-player :p1) => :p2))
 
 (defn moves-of-pos-complex
-  [coord bd] (reduce (fn [m [p b]] (conj m [p (set-board-next-player b)]))
-                     {}
-                     (compute-jumps (possible-jumps coord bd)
-                                    bd)))
+  [coord bd] (compute-jumps (possible-jumps coord bd)
+                            bd))
 
 (fact "moves-of-pos-complex"
-  (moves-of-pos-complex :coord :bd) => {:path1 :bd1n, :path2 :bd2n}
+  (moves-of-pos-complex :coord :bd) => {:path1 :bd1, :path2 :bd2}
   (provided
     (possible-jumps :coord :bd)   => [:j1 :j2]
-    (compute-jumps [:j1 :j2] :bd) => {:path1 :bd1, :path2 :bd2}
-    (set-board-next-player :bd1)  => :bd1n
-    (set-board-next-player :bd2)  => :bd2n))
+    (compute-jumps [:j1 :j2] :bd) => {:path1 :bd1, :path2 :bd2}))
+
+(future-fact "create an update-map-vals fun, for below")
 
 (defn moves-of-pos
-  [coord board] (merge (moves-of-pos-simple  coord board)
-                       (moves-of-pos-complex coord board)))
+  [coord board] (reduce (fn [m [p b]] (conj m [p (set-board-next-player b)]))
+                        {}
+                        (merge (moves-of-pos-simple  coord board)
+                               (moves-of-pos-complex coord board))))
 
 (fact "moves-of-pos"
-      (moves-of-pos :coord :board) => {:path1 :bd1, :path2 :bd2, :path3 :bd3}
+      (moves-of-pos :coord :board) => {:path1 :bd1n, :path2 :bd2n, :path3 :bd3n}
       (provided
        (moves-of-pos-simple  :coord :board) => {:path1 :bd1}
-       (moves-of-pos-complex :coord :board) => {:path2 :bd2, :path3, :bd3}))
+       (moves-of-pos-complex :coord :board) => {:path2 :bd2, :path3, :bd3}
+       (set-board-next-player :bd1)         => :bd1n
+       (set-board-next-player :bd2)         => :bd2n
+       (set-board-next-player :bd3)         => :bd3n))
 
 (defn piece-of-player?
   [piece player] (case player
