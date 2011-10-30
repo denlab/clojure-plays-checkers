@@ -6,20 +6,42 @@
   (:import (java.text SimpleDateFormat))
   (:import (java.util Date)))
 
-(unfinished io-show-goodbye io-play-again? io-show-winner
-            io-choose-player io-show-welcome game-over?
+(unfinished io-play-move play-move io-show-goodbye io-play-again?
+            io-show-winner io-choose-player io-show-welcome game-over?
             new-board-at-startup )
 
-(defn one-game "Loop which will organise one game"
-  [] (let [b (new-board-at-startup)]
-       (if-let [winner (game-over? b)]
-         winner)))
+(defn one-game "Plays one game, the human player is given in param :b|:w)"
+  [human] (let [b        (new-board-at-startup)
+                black-fn (human {:b io-play-move :w play-move})
+                white-fn (human {:w io-play-move :b play-move})]
+            (loop [curr-bd b
+                   curr-fn black-fn
+                   next-fn (interleave (repeat white-fn) (repeat black-fn))]
+              (let [bd-n   (curr-fn curr-bd)
+                    winner (game-over? bd-n)]
+                (if winner
+                  winner
+                  (recur bd-n (first next-fn) (next next-fn)))))))
 
-(fact "one-game : black wins directly"
-  (one-game) => :b
+(fact "one-game : human white, computer plays, human plays and win"
+  (one-game :w) => :w
   (provided
-    (new-board-at-startup) => :board
-    (game-over? :board)    => :b))
+    (new-board-at-startup) => :bd
+    (play-move    :bd)  => :bd1
+    (game-over?   :bd1) => false
+    (io-play-move :bd1) => :bd2
+    (game-over?   :bd2) => :w))
+
+(fact "one-game : human black, human plays, computer plays, human play and win"
+  (one-game :b) => :b
+  (provided
+    (new-board-at-startup) => :bd
+    (io-play-move :bd)  => :bd1
+    (game-over?   :bd1) => false
+    (play-move    :bd1)  => :bd2
+    (game-over?   :bd2) => false
+    (io-play-move :bd2) => :bd3
+    (game-over?   :bd3) => :b))
 
 (defn main-loop
   [] (do 
