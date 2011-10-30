@@ -6,54 +6,37 @@
   (:import (java.text SimpleDateFormat))
   (:import (java.util Date)))
 
-(unfinished io-play-again? io-show-winner io-choose-player
-            io-show-welcome game-over?  new-board-at-startup )
+(unfinished io-show-goodbye io-play-again? io-show-winner
+            io-choose-player io-show-welcome game-over?
+            new-board-at-startup )
 
-(defn sub-loop "Loop which will organise one game"
+(defn one-game "Loop which will organise one game"
   [] (let [b (new-board-at-startup)]
        (if-let [winner (game-over? b)]
          winner)))
 
-(fact "sub-loop : black wins directly"
-  (sub-loop) => :b
+(fact "one-game : black wins directly"
+  (one-game) => :b
   (provided
     (new-board-at-startup) => :board
-    (game-over? :board) => :b))
+    (game-over? :board)    => :b))
 
 (defn main-loop
-  []
-  (io-show-welcome)
-  (loop [cnt 0]
-    (let [player (io-choose-player)
-          winner (sub-loop player)]
-      (io-show-winner winner)
-      (if (> cnt 4)
-        :overflow
-        (if (io-play-again?)
-          (recur (inc cnt)))))))
+  [] (do 
+       (io-show-welcome)
+       (loop []
+         (io-show-winner (one-game (io-choose-player)))
+         (when (io-play-again?) (recur)))
+       (io-show-goodbye)))
 
-(fact "main-loop: one party and exit"
+(fact "main-loop: one game and exit"
   (main-loop) => falsey
   (provided
     (io-show-welcome)   => nil
     (io-choose-player)  => :b
-    (sub-loop :b)       => :w
+    (one-game :b)       => :w
     (io-show-winner :w) => nil
-    (io-play-again?)    => false))
-
-(fact "main-loop: 2 parties and exit"
-  (main-loop) => falsey
-  (provided
-    (io-show-welcome)   => nil
-    (io-choose-player)  => :b
-    (sub-loop :b)       => :w
-    (io-show-winner :w) => nil
-    (io-play-again?)    => true
-    (io-choose-player)  => :b
-    (sub-loop :b)       => :w
-    (io-show-winner :w) => nil
-    (io-play-again?)    => false))
-
-()
+    (io-play-again?)    => false
+    (io-show-goodbye)   => nil))
 
 (println "--------- END OF CHECKERS.CORE ----------" (java.util.Date.))
