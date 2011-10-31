@@ -2,7 +2,8 @@
   (:use     [midje.sweet])
   (:use     [clojure.pprint :only [pprint]])
   (:use     [clojure.walk   :only [macroexpand-all]])
-  (:require [clojure.set     :as set])
+  (:require [clojure.set                       :as set])
+  (:require [clojure-plays-checkers.board-util :as u])
   (:import (java.text SimpleDateFormat))
   (:import (java.util Date)))
 
@@ -12,8 +13,9 @@
 
 (defn one-game "Plays one game, the human player is given in param :b | :w"
   [human] (let [b        (new-board-at-startup)
-                black-fn (human {:b io-play-move :w play-move})
-                white-fn (human {:w io-play-move :b play-move})]
+                human->fn {:b io-play-move :w play-move}
+                black-fn  (human human->fn)
+                white-fn  ((u/next-player human) human->fn)]
             (loop [curr-bd b
                    curr-fn black-fn
                    next-fn (interleave (repeat white-fn) (repeat black-fn))]
@@ -26,10 +28,10 @@
   (one-game :w) => :w
   (provided
     (new-board-at-startup) => :bd
-    (play-move    :bd)  => :bd1
-    (game-over?   :bd1) => false
-    (io-play-move :bd1) => :bd2
-    (game-over?   :bd2) => :w))
+    (play-move    :bd)     => :bd1
+    (game-over?   :bd1)    => false
+    (io-play-move :bd1)    => :bd2
+    (game-over?   :bd2)    => :w))
 
 (fact "one-game : human black, human plays, computer plays, human play and win"
   (one-game :b) => :b
