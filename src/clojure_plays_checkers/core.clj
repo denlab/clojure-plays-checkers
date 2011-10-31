@@ -2,18 +2,19 @@
   (:use     [midje.sweet])
   (:use     [clojure.pprint :only [pprint]])
   (:use     [clojure.walk   :only [macroexpand-all]])
-  (:require [clojure.set                       :as set])
+  (:require [clojure.set                       :as s])
   (:require [clojure-plays-checkers.board-util :as u])
+  (:require [clojure-plays-checkers.find       :as f])
   (:import (java.text SimpleDateFormat))
   (:import (java.util Date)))
 
-(unfinished io-play-move play-move io-show-goodbye io-play-again?
+(unfinished io-play-move io-show-goodbye io-play-again?
             io-show-winner io-choose-player io-show-welcome game-over?
             new-board-at-startup )
 
 (defn one-game "Plays one game, the human player is given in param :b | :w"
   [human] (let [b        (new-board-at-startup)
-                human->fn {:b io-play-move :w play-move}
+                human->fn {:b io-play-move :w f/play-move}
                 black-fn  (human human->fn)
                 white-fn  ((u/next-player human) human->fn)]
             (loop [curr-bd b
@@ -28,7 +29,7 @@
   (one-game :w) => :w
   (provided
     (new-board-at-startup) => :bd
-    (play-move    :bd)     => :bd1
+    (f/play-move    :bd)     => :bd1
     (game-over?   :bd1)    => false
     (io-play-move :bd1)    => :bd2
     (game-over?   :bd2)    => :w))
@@ -39,7 +40,7 @@
     (new-board-at-startup) => :bd
     (io-play-move :bd)  => :bd1
     (game-over?   :bd1) => false
-    (play-move    :bd1)  => :bd2
+    (f/play-move    :bd1)  => :bd2
     (game-over?   :bd2) => false
     (io-play-move :bd2) => :bd3
     (game-over?   :bd3) => :b))
