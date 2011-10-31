@@ -64,39 +64,63 @@ digraph funtions {
  *                         nodes                                              *         
  ******************************************************************************/
 
-        "moves"[bgcolor=green color=green style=filled];
-        "coords-of-player"[bgcolor=green color=green style=filled];
-        "moves-of-pos"[bgcolor=green color=green style=filled];
-        "moves-of-pos-complex"[bgcolor=green color=green style=filled];
-        "moves-of-pos-simple"[bgcolor=green color=green style=filled];
-        "compute-board-simple"[bgcolor=green color=green style=filled];
-        "mv-cell"[bgcolor=green color=green style=filled];
-        "add-cell"[bgcolor=green color=green style=filled];
-        "rm-cell"[bgcolor=green color=green style=filled];
-        "empty-neighboors-of-piece"[bgcolor=green color=green style=filled];
-        "neighboors-of-piece"[bgcolor=green color=green style=filled];
+        "moves"[style=filled,fillcolor="#CCFFCC"];
+        "coords-of-player"[style=filled,fillcolor="#CCFFCC"];
+        "moves-of-pos"[style=filled,fillcolor="#CCFFCC"];
+        "moves-of-pos-complex"[style=filled,fillcolor="#CCFFCC"];
+        "moves-of-pos-simple"[style=filled,fillcolor="#CCFFCC"];
+        "compute-board-simple"[style=filled,fillcolor="#CCFFCC"];
+        "mv-cell"[style=filled,fillcolor="#CCFFCC"];
+        "add-cell"[style=filled,fillcolor="#CCFFCC"];
+        "rm-cell"[style=filled,fillcolor="#CCFFCC"];
+        "empty-neighboors-of-piece"[style=filled,fillcolor="#CCFFCC"];
+        "neighboors-of-piece"[style=filled,fillcolor="#CCFFCC"];
 
-        "compute-jump"[bgcolor=green color=green style=filled];
+        "compute-jump"[style=filled,fillcolor="#CCFFCC"];
 
-        "jump-cell"[bgcolor=green color=green style=filled];
-        "possible-jumps"[bgcolor=green color=green style=filled];
-        "jumpable?"[bgcolor=green color=green style=filled];
+        "jump-cell"[style=filled,fillcolor="#CCFFCC"];
+        "possible-jumps"[style=filled,fillcolor="#CCFFCC"];
+        "jumpable?"[style=filled,fillcolor="#CCFFCC"];
 
-        "coord-of-player?"[bgcolor=grey color=grey style=filled];
-        "jumps-to-path"[bgcolor=grey color=grey style=filled];
-        "king-at-pos?"[bgcolor=grey color=grey style=filled];
-        "king?"[bgcolor=grey color=grey style=filled];
-        "neighboors-for-jump"[bgcolor=grey color=grey style=filled];
-        "neighboors-for-jump-may-be-out-of-bound"[bgcolor=grey color=grey style=filled];
-        "neighboors"[bgcolor=grey color=grey style=filled];
-        "new-board"[bgcolor=grey color=grey style=filled];
-        "new-board-fn"[bgcolor=grey color=grey style=filled];
-        "new-board-mat"[bgcolor=grey color=grey style=filled];
-        "mat-coords"[bgcolor=grey color=grey style=filled];
+        "coord-of-player?"[style=filled,fillcolor="#FFCC99"];
+        "jumps-to-path"[style=filled,fillcolor="#FFCC99"];
+        "king-at-pos?"[style=filled,fillcolor="#FFCC99"];
+        "king?"[style=filled,fillcolor="#FFCC99"];
+        "neighboors-for-jump"[style=filled,fillcolor="#FFCC99"];
+        "neighboors-for-jump-may-be-out-of-bound"[style=filled,fillcolor="#FFCC99"];
+        "neighboors"[style=filled,fillcolor="#FFCC99"];
+        "new-board"[style=filled,fillcolor="#FFCC99"];
+        "new-board-fn"[style=filled,fillcolor="#FFCC99"];
+        "new-board-mat"[style=filled,fillcolor="#FFCC99"];
+        "mat-coords"[style=filled,fillcolor="#FFCC99"];
 
-        "set-board-next-player"[bgcolor=green color=green style=filled];
+        "set-board-next-player"[style=filled,fillcolor="#CCFFCC"];
 
-        "compute-jumps"[bgcolor=green color=green style=filled];
+        "compute-jumps"[style=filled,fillcolor="#FFCC99"];
+
+        "piece-of-player?"[style=filled,fillcolor="#FFCC99"];
+        "next-player"[style=filled,fillcolor="#FFCC99"];
+        "in-bound?"[style=filled,fillcolor="#FFCC99"];
+        "in-bound-one?"[style=filled,fillcolor="#FFCC99"];
+
+
+/******************************************************************************
+ *                         one-game                                           *         
+ ******************************************************************************/
+
+        subgraph "cluster-ns-core" {
+                label = "core";
+
+                node [style=filled,fillcolor="#FF99CC"];
+
+                "main-loop" -> "one-game";
+
+                "main-loop";
+                "one-game";
+
+
+
+        }
 
 /******************************************************************************
  *                         namespaces                                         *         
@@ -112,5 +136,7 @@ digraph funtions {
                  "new-board-fn";
                  "mat-coords";
                  "new-board-mat";
+
+                 label = "board-util";
         }
 }
