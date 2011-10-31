@@ -1,4 +1,4 @@
-(ns clojure-plays-checkers.checkers
+(ns clojure-plays-checkers.board
   (:use     [midje.sweet])
   (:use     [clojure.pprint :only [pprint]])
   (:use     [clojure.walk   :only [walk macroexpand-all]])
