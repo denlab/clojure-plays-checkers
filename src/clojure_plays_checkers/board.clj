@@ -2,7 +2,8 @@
   (:use     [midje.sweet])
   (:use     [clojure.pprint :only [pprint]])
   (:use     [clojure.walk   :only [walk macroexpand-all]])
-  (:require [clojure.set     :as set])
+  (:require [clojure.set                       :as set])
+  (:require [clojure-plays-checkers.board-util :as u])
   (:import (java.text SimpleDateFormat))
   (:import (java.util Date)))
 
@@ -26,72 +27,6 @@
   (let [a 1 b 2]
     (with-out-str (print-sym a b))) => "a=1,\tb=2\n")
 
-
-(defn mat-coords "Return all the coords of a matrix of the given size"
-  [s] (vec (take (* s s)
-                 (iterate (fn [[y x]] (if (= (inc x) s)
-                                       [(inc y) 0]
-                                       [y (inc x)]))
-                          [0 0]))))
-
-(fact
- (mat-coords 3) => [[0 0] [0 1] [0 2]
-                    [1 0] [1 1] [1 2]
-                    [2 0] [2 1] [2 2]])
-
-(fact
-  (mat-coords 3)         => vector?
-  (get (mat-coords 3) 0) => vector?)
-
-(defn new-board-mat
-  [board] (let [sym->vals {'x :b 'K :b-king 'o :w '0 :w-king}
-                s (int (Math/sqrt (count board)))]
-            (vec (map vec (partition s (map #(sym->vals %)
-                                            board))))))
-
-(fact
- (new-board-mat '[x K .
-                  . . .
-                  o 0 .]) => [[:b  :b-king nil]
-                              [nil nil     nil]
-                              [:w  :w-king nil]])
-
-(fact "board is a vec"
-  (new-board-mat '[.])         => vector?
-  (first (new-board-mat '[.])) => vector?)
-
-(defn new-board-fn "Construct a full board with a player and a matrix."
-  [[player & board]]
-  (let [s (int (Math/sqrt (count board)))]
-    {:size   s
-     :player player
-     :coords (mat-coords s)
-     :board  (new-board-mat board)}))
-
-(fact
- (new-board-fn
-  '[:b
-    . .
-    . .])
- => {:size 2
-     :player :b
-     :coords [[0 0]]
-     :board [[:board]]}
- (provided
-  (mat-coords 2) => [[0 0]]
-  (new-board-mat '[. .
-                   . .]) => [[:board]]))
-
-(defmacro new-board
-  [& body] (new-board-fn body))
-
-(fact "Check the macro for building board"
-             (new-board :a
-                        . .
-                        . .)
-             => (new-board-fn '[:a
-                                . .
-                                . .]))
 
 (defn in-bound-one?
   [n size] (< -1 n size))
@@ -178,102 +113,13 @@
       (neighboors-of-piece :coord board) => [[0 0] [0 1]
                                              [1 0] [1 1]])))
 
-(defn next-player
-  [player] (case player
-             :b :w
-             :w :b))
-
-(fact
-  (next-player :b) => :w
-  (next-player :w) => :b)
-
-(defn rm-cell
-  [board [y x]]
-  {:pre [(get-in board [:board y x])]}
-  (update-in board [:board y x] (fn [_] nil)))
-
-(fact
- (rm-cell (new-board :x
-                     o o
-                     o o) [1 0]) => (new-board :x
-                                               o o
-                                               . o)
- (rm-cell (new-board :x
-                     .) [0 0]) => (throws AssertionError))
-
-(defn add-cell
-  [{:keys [size] :as board-full} [y x] piece]
-  {:pre [(not (get-in board-full [:board y x]))]}
-  (let [new-p
-        (cond
-         (and (= :b piece) (= y 0         ))     :b-king
-         (and (= :w piece) (= y (dec size)))     :w-king
-         :else                                   piece)]
-    (update-in board-full [:board y x] (fn [_] new-p))))
-
-(fact "add-cell simple black"
-      (add-cell (new-board :b
-                           0 0
-                           . 0) [1 0] :b)
-      => (new-board :b
-                    0 0
-                    x 0))
-
-(fact "add-cell assertion"
-      (add-cell (new-board :b
-                           o) [0 0] :b) => (throws AssertionError))
-
-(fact "add-cell simple white"
-      (add-cell (new-board :b
-                           . K
-                           K K) [0 0] :w)
-      => (new-board :b
-                    o K
-                    K K))
-
-(fact "add-cell kingify black"
-      (add-cell (new-board :x
-                           . 0
-                           0 0) [0 0] :b)
-      => (new-board :x
-                    K 0
-                    0 0))
-
-(fact "add-cell kingify white"
-      (add-cell (new-board :x
-                           K K
-                           . K) [1 0] :w) => (new-board :x
-                                                        K K
-                                                        0 K))
-
-(defn mv-cell
-  [{:keys [board] :as board-full} src dst] (-> board-full
-                                               (rm-cell src)
-                                               (add-cell dst (get-in board src))))
-
-(fact
- (let [board {:board [[:piece]]}]
-   (mv-cell board [0 0] :dst) => :bd2
-   (provided
-    (rm-cell board [0 0])       => :bd1
-    (add-cell :bd1 :dst :piece) => :bd2)))
-
-(fact
- (mv-cell (new-board :b
-                     . .
-                     . .) [0 0] [1 1]) => (throws AssertionError)
-
- (mv-cell (new-board :b
-                     o .
-                     . o) [0 0] [1 1]) => (throws AssertionError))
-
 (defn compute-board-simple
-  [board src dst] (mv-cell board src dst))
+  [board src dst] (u/mv-cell board src dst))
 
 (fact "compute-board-simple"
   (compute-board-simple :bd :src :dst) => :bd2
   (provided
-    (mv-cell :bd :src :dst) => :bd2))
+    (u/mv-cell :bd :src :dst) => :bd2))
 
 (defn moves-of-pos-simple
   [coord board]
@@ -323,7 +169,7 @@
 
 (defn jumpable?
   [next-coord next-coord2 {:keys [board player]}]
-  (and (=    (get-in board next-coord) (next-player player))
+  (and (=    (get-in board next-coord) (u/next-player player))
        (nil? (get-in board next-coord2))))
 
 (tabular
@@ -365,14 +211,14 @@
 (defn jump-cell
   [bd {:keys [src dst remove]}]
   (-> bd
-      (rm-cell remove)
-      (mv-cell src dst)))
+      (u/rm-cell remove)
+      (u/mv-cell src dst)))
 
 (fact "jump-cell"
       (jump-cell :bd {:src :s, :dst :d, :remove :r}) => :bd2
       (provided
-       (rm-cell :bd  :r)    => :bd1
-       (mv-cell :bd1 :s :d) => :bd2))
+       (u/rm-cell :bd  :r)    => :bd1
+       (u/mv-cell :bd1 :s :d) => :bd2))
 
 (defn king?
   [piece]  (or (= piece :b-king)
@@ -452,9 +298,9 @@
   (let [jmp {:src :s :dst :d :remove :r}]
     (compute-jump jmp {:board :bd-mat1 :size :size :player :player}) => {[jmp] {:board :bd-mat2}}
     (provided
-      (jump-cell {:board :bd-mat1 :size :size :player :player} jmp)     => {:board :bd-mat2}
-      (king-at-pos? :bd-mat2 :d)                 => false
-      (possible-jumps :d {:board :bd-mat2}) => [])))
+      (jump-cell {:board :bd-mat1 :size :size :player :player} jmp) => {:board :bd-mat2}
+      (king-at-pos? :bd-mat2 :d)                                    => false
+      (possible-jumps :d {:board :bd-mat2})                         => [])))
 
 (defn jumps-to-path
   [jumps] (conj
@@ -493,10 +339,10 @@
     (jumps-to-path :jumps-b2) => :path-b2))
 
 (defn set-board-next-player
-  [b] (update-in b [:player] next-player))
+  [b] (update-in b [:player] u/next-player))
 
 (fact (set-board-next-player {:player :p1}) => {:player :p2}
-  (provided (next-player :p1) => :p2))
+  (provided (u/next-player :p1) => :p2))
 
 (defn moves-of-pos-complex
   [coord bd] (compute-jumps (possible-jumps coord bd)
@@ -574,88 +420,88 @@
     (moves-of-pos :c2 :board) => {:path2 :bd2}))
 
 (fact "moves: itest simple mv"
-      (moves (new-board :b
+      (moves (u/new-board :b
                         . . 
                         . x))
-      => {[[1 1] [0 0]] (new-board :w
+      => {[[1 1] [0 0]] (u/new-board :w
                                    K .
                                    . .)})
 
 (fact "moves: itest simple mv on 3x3"
-      (moves (new-board :b
+      (moves (u/new-board :b
                         . . .
                         . . .
                         . . x))
-      => {[[2 2] [1 1]] (new-board :w
+      => {[[2 2] [1 1]] (u/new-board :w
                                    . . .
                                    . x .
                                    . . .)})
 
 (fact "moves: itest simple mv, left or right"
-      (moves (new-board :b
+      (moves (u/new-board :b
                         . . .
                         . . .
                         . x .))
-      => {[[2 1] [1 0]] (new-board :w
+      => {[[2 1] [1 0]] (u/new-board :w
                                    . . .
                                    x . .
                                    . . .)
-          [[2 1] [1 2]] (new-board :w
+          [[2 1] [1 2]] (u/new-board :w
                                    . . .
                                    . . x
                                    . . .)})
 
 (fact "moves: itest can't move because of wall"
-  (moves (new-board :b
+  (moves (u/new-board :b
                     x .
                     . .)) => {}
-  (moves (new-board :w
+  (moves (u/new-board :w
                     . .
                     . o)) => {})
 
 (fact "moves: itest can move backwards if king"
-  (moves (new-board :b
+  (moves (u/new-board :b
                     K .
-                    . .)) => {[[0 0] [1 1]] (new-board :w
+                    . .)) => {[[0 0] [1 1]] (u/new-board :w
                                                        . .
                                                        . K)})
 
 (fact "moves: itest can't move because of friend"
-  (moves (new-board :b
+  (moves (u/new-board :b
                     . x
                     x .)) => {}
-  (moves (new-board :w
+  (moves (u/new-board :w
                     . o
                     o .)) => {})
 
 (fact "moves: itest can't move because of enemy"
-  (moves (new-board :b
+  (moves (u/new-board :b
                     . o
                     x .)) => {}
-  (moves (new-board :w
+  (moves (u/new-board :w
                     . o
                     x .)) => {})
 
 (fact "moves: itest jump simple"
-  (moves (new-board :b
+  (moves (u/new-board :b
                     . . .
                     . o .
                     . . x)) 
   => {[[2 2] [0 0]]
-      (new-board :w
+      (u/new-board :w
                  K . .
                  . . .
                  . . .)})
 
 (fact "moves: itest jump of length 2"
-  (moves (new-board :b
+  (moves (u/new-board :b
                     . . . . .
                     . . . . .
                     . . . . .
                     . o . o .
                     . . . . x)) 
   => {[[4 4] [2 2] [4 0]]
-      (new-board :w
+      (u/new-board :w
                     . . . . .
                     . . . . .
                     . . . . .
@@ -663,21 +509,21 @@
                     x . . . .)})
 
 (fact "moves: itest jump with 2 possibilities"
-  (moves (new-board :b
+  (moves (u/new-board :b
                     . . . . .
                     . . . o .
                     . . . . .
                     . o . o .
                     . . . . x)) 
   => {[[4 4] [2 2] [4 0]]
-      (new-board :w
+      (u/new-board :w
                  . . . . .
                  . . . o .
                  . . . . .
                  . . . . .
                  x . . . .)
       [[4 4] [2 2] [0 4]]
-      (new-board :w
+      (u/new-board :w
                  . . . . K
                  . . . . .
                  . . . . .
@@ -685,7 +531,7 @@
                  . . . . .)})
 
 (fact "moves: itest can't jump because there's 2 enemies"
-  (moves (new-board :b
+  (moves (u/new-board :b
                     . . . . .
                     . . . . .
                     . . o . .
@@ -694,17 +540,17 @@
   => {})
 
 (fact "moves: itest combo jump stopped by a kingification"
-  (moves (new-board :b
+  (moves (u/new-board :b
                     . . . . .
                     . o . o .
                     x . . . .
                     . . . . .
                     . . . . .)) 
-  => {[[2 0] [0 2]] (new-board :w
+  => {[[2 0] [0 2]] (u/new-board :w
                                . . K . .
                                . . . o .
                                . . . . .
                                . . . . .
                                . . . . .)})
 
-(println "--------- END OF CHECKERS ----------" (java.util.Date.))
+(println "--------- END OF BOARD ----------" (java.util.Date.))

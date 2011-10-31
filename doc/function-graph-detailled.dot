@@ -4,7 +4,7 @@ digraph funtions {
  *                         edges                                              *         
  ******************************************************************************/
 
-        "new-board-fn" -> "mat-coord";
+        "new-board-fn" -> "mat-coords";
         "new-board-fn" -> "new-board-mat";
         
         "new-board" -> "new-board-fn";
@@ -99,18 +99,18 @@ digraph funtions {
         "compute-jumps"[bgcolor=green color=green style=filled];
 
 /******************************************************************************
- *                         legend                                             *         
+ *                         namespaces                                         *         
  ******************************************************************************/
 
-        "Takes a\npseudo-graph"[bgcolor=red color=red style=filled];
-        "Takes a\ngraph"[bgcolor=green color=green style=filled];
-//        "Takes\nother"[bgcolor="#94003f" color="#94003f" style=filled];
-        "Takes\nother"[bgcolor=grey color=grey style=filled];
+        subgraph "cluster-ns-board-util" {
+                 "mv-cell";
+                 "rm-cell";
+                 "add-cell";
+                 "next-player";
 
-        subgraph "cluster-legend" {
-                "Takes a\npseudo-graph";
-                "Takes a\ngraph";
-                "Takes\nother";
+                 "new-board";
+                 "new-board-fn";
+                 "mat-coords";
+                 "new-board-mat";
         }
-
 }

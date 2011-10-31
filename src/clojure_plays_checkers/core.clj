@@ -60,4 +60,4 @@
     (io-play-again?)    => false
     (io-show-goodbye)   => nil))
 
-(println "--------- END OF CHECKERS.CORE ----------" (java.util.Date.))
+(println "--------- END OF CORE ----------" (java.util.Date.))
