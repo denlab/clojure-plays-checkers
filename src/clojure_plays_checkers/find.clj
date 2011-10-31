@@ -1,4 +1,5 @@
-(ns clojure-plays-checkers.find
+(ns ^{:doc "Try to find a good solution to play."}
+  clojure-plays-checkers.find
   (:use     [midje.sweet])
   (:use     [clojure.pprint :only [pprint]])
   (:use     [clojure.walk   :only [macroexpand-all]])
