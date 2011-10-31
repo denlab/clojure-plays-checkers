@@ -10,7 +10,7 @@
             io-show-winner io-choose-player io-show-welcome game-over?
             new-board-at-startup )
 
-(defn one-game "Plays one game, the human player is given in param :b|:w)"
+(defn one-game "Plays one game, the human player is given in param :b | :w"
   [human] (let [b        (new-board-at-startup)
                 black-fn (human {:b io-play-move :w play-move})
                 white-fn (human {:w io-play-move :b play-move})]
