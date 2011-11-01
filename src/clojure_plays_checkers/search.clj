@@ -1,5 +1,5 @@
-(ns ^{:doc "Try to find a good solution to play."}
-  clojure-plays-checkers.find
+(ns ^{:doc "Search the game tree"}
+  clojure-plays-checkers.search
   (:use     [midje.sweet])
   (:use     [clojure.pprint :only [pprint]])
   (:use     [clojure.walk   :only [macroexpand-all]])
@@ -11,4 +11,5 @@
 (defn play-move
   [bd])
 
-(future-fact "play-move")
+(fact "play-move"
+  )
