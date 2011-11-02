@@ -7,7 +7,8 @@
   (:import (java.text SimpleDateFormat))
   (:import (java.util Date)))
 
-(unfinished game-over-only-one?)
+(unfinished game-over-draw? game-over-cannot-move?
+            game-over-all-captured?)
 
 (defn print-sym-fn-
   [body]
@@ -553,11 +554,36 @@
                                . . . . .
                                . . . . .)})
 
-(defn game-over?
-  [bd] (game-over-only-one? bd))
 
-(fact "game-over?: when there's only one player remaining"
+
+(defn game-over?
+  [bd] (or (game-over-all-captured? bd)
+           (game-over-cannot-move?  bd)
+           (game-over-draw?         bd)))
+
+(fact "game-over?: all captured"
       (game-over? :bd) => :some-val
-      (provided (game-over-only-one? :bd) => :some-val))
+      (provided
+       (game-over-all-captured? :bd) => :some-val))
+
+(fact "game-over?: can't move"
+      (game-over? :bd) => :some-val
+      (provided
+       (game-over-all-captured? :bd) => nil
+       (game-over-cannot-move?  :bd) => :some-val))
+
+(fact "game-over?: not yet"
+      (game-over? :bd) => nil
+      (provided
+       (game-over-all-captured? :bd) => nil
+       (game-over-cannot-move?  :bd) => nil
+       (game-over-draw?         :bd) => nil))
+
+(fact "game-over?: draw"
+      (game-over? :bd) => :draw
+      (provided
+       (game-over-all-captured? :bd) => nil
+       (game-over-cannot-move?  :bd) => nil
+       (game-over-draw?         :bd) => :draw))
 
 (println "--------- END OF BOARD ----------" (java.util.Date.))
