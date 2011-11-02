@@ -7,7 +7,7 @@
   (:import (java.text SimpleDateFormat))
   (:import (java.util Date)))
 
-(unfinished)
+(unfinished game-over-only-one?)
 
 (defn print-sym-fn-
   [body]
@@ -552,5 +552,12 @@
                                . . . . .
                                . . . . .
                                . . . . .)})
+
+(defn game-over?
+  [bd] (game-over-only-one? bd))
+
+(fact "game-over?: when there's only one player remaining"
+      (game-over? :bd) => :some-val
+      (provided (game-over-only-one? :bd) => :some-val))
 
 (println "--------- END OF BOARD ----------" (java.util.Date.))

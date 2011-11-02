@@ -4,12 +4,13 @@
   (:use     [clojure.walk   :only [macroexpand-all]])
   (:require [clojure.set                       :as set])
   (:require [clojure-plays-checkers.board-util :as u])
-  (:require [clojure-plays-checkers.find       :as s])
+  (:require [clojure-plays-checkers.board      :as b])
+  (:require [clojure-plays-checkers.search     :as s])
   (:import (java.text SimpleDateFormat))
   (:import (java.util Date)))
 
 (unfinished io-play-move io-show-goodbye io-play-again?
-            io-show-winner io-choose-player io-show-welcome game-over?
+            io-show-winner io-choose-player io-show-welcome
             new-board-at-startup )
 
 (defn one-game "Plays one game, the human player is given in param :b | :w"
@@ -21,7 +22,7 @@
                    curr-fn black-fn
                    next-fn (interleave (repeat white-fn) (repeat black-fn))]
               (let [bd-n   (curr-fn curr-bd)
-                    winner (game-over? bd-n)] (if winner
+                    winner (b/game-over? bd-n)] (if winner
                                                 winner
                                                 (recur bd-n (first next-fn) (next next-fn)))))))
 
@@ -30,20 +31,20 @@
   (provided
     (new-board-at-startup) => :bd
     (s/play-move    :bd)     => :bd1
-    (game-over?   :bd1)    => false
+    (b/game-over?   :bd1)    => false
     (io-play-move :bd1)    => :bd2
-    (game-over?   :bd2)    => :w))
+    (b/game-over?   :bd2)    => :w))
 
 (fact "one-game : human black, human plays, computer plays, human play and win"
   (one-game :b) => :b
   (provided
     (new-board-at-startup) => :bd
     (io-play-move :bd)  => :bd1
-    (game-over?   :bd1) => false
+    (b/game-over?   :bd1) => false
     (s/play-move    :bd1)  => :bd2
-    (game-over?   :bd2) => false
+    (b/game-over?   :bd2) => false
     (io-play-move :bd2) => :bd3
-    (game-over?   :bd3) => :b))
+    (b/game-over?   :bd3) => :b))
 
 (defn main-loop
   [] (do 

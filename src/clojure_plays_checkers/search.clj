@@ -5,11 +5,15 @@
   (:use     [clojure.walk   :only [macroexpand-all]])
   (:require [clojure.set                       :as set])
   (:require [clojure-plays-checkers.board-util :as u])
+  (:require [clojure-plays-checkers.board      :as b])
   (:import (java.text SimpleDateFormat))
   (:import (java.util Date)))
 
-(defn play-move
-  [bd])
+(defn play-move ""
+  ([bd] (play-move bd 2)))
 
-(fact "play-move"
+(fact "play-move: board finished"
   )
+
+
+(println "--------- END OF SEARCH ----------" (java.util.Date.))
