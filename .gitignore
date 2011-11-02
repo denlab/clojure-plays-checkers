@@ -14,3 +14,4 @@ pom.xml
 /src/clojure_plays_checkers/.#checkers.clj
 /doc/*.png
 /src/clojure_plays_checkers/#search.clj#
+/.#.gitignore
