@@ -1,7 +1,7 @@
 (ns clojure-plays-checkers.core
   (:use     [midje.sweet])
   (:use     [clojure.pprint :only [pprint]])
-  (:use     [clojure.walk   :only [macroexpand-all]])
+  (:require [clojure.walk                      :as w])
   (:require [clojure.set                       :as set])
   (:require [clojure-plays-checkers.board-util :as u])
   (:require [clojure-plays-checkers.board      :as b])
