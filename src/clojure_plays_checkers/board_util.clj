@@ -39,6 +39,30 @@
   (new-board-mat '[.])         => vector?
   (first (new-board-mat '[.])) => vector?)
 
+
+;; FIXME: probably could be done with walk
+(defn pretty-board
+  [{bd :board}]
+  (let [m {:w 'o, :w-king '0, :b 'x, :b-king 'K, nil '., " " " "}]
+    (reduce str
+            (interpose "\n"
+                       (map (fn [row]
+                              (reduce
+                               (fn [s2 col] (str s2 (m col)))
+                               ""
+                               (interpose " " row)))
+                            bd)))))
+
+(fact
+ (pretty-board {:size   :s
+                :player :player
+                :coords :coords
+                :board  [[nil :w  :w-king]
+                         [nil nil nil]
+                         [nil :b  :b-king]]}) => ". o 0
+. . .
+. x K")
+
 (defn new-board-fn "Construct a full board with a player and a matrix."
   [[player & board]]
   (let [s (int (Math/sqrt (count board)))]
