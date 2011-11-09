@@ -13,3 +13,4 @@ pom.xml
 /src/clojure_plays_checkers/core (denis-macbook-air's conflicted copy 2011-10-22).clj
 /src/clojure_plays_checkers/.#checkers.clj
 /doc/*.png
+.cake
