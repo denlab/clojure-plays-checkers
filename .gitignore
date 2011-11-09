@@ -15,3 +15,4 @@ pom.xml
 /doc/*.png
 /src/clojure_plays_checkers/#search.clj#
 /.#.gitignore
+.cake
