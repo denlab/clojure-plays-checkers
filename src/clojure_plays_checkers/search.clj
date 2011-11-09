@@ -11,8 +11,10 @@
   (:import (java.util Date)))
 
 (defn b-branch? "Returns true if the board has possible moves AND max depth not reached"
-  [max-depth] (fn [[depth bd]] (and (< depth max-depth)
-                                   (not (empty? (b/moves bd))))))
+  [max-depth] (fn [arg]
+                (do #_(println "arg:" arg "\n")
+                    (let [[depth bd] arg] (and (< depth max-depth)
+                                               (not (empty? (b/moves bd))))))))
 
 (fact "b-branch?: can move, max depth not reached"
       ((b-branch? 1) [0 :board]) => true
@@ -39,10 +41,11 @@
   ;; root is the root node.
 
 (defn children
-  [[_ bd]] (vals (b/moves bd)))
+  [[depth bd]] (map (fn [x] [(inc depth) x])
+                    (vals (b/moves bd))))
 
 (fact
- (children [:depth :bd]) => [:bd1 :bd2]
+ (children [1 :bd]) => [[2 :bd1] [2 :bd2]]
  (provided
   (b/moves :bd) => {:path1 :bd1 :path2 :bd2}))
 
@@ -59,15 +62,31 @@
                              x . x . x
                              . x . x .))
 
-(def z (z/zipper (b-branch? 3)
+(def z (z/zipper (b-branch? 4)
                  children
                  make-node
                  [0 *start-bd*]))
+
+(defn game-to-dot
+  [root-bd max-depth] )
+
+(fact
+ (game-to-dot))
 
 (defn play-move ""
   ([bd] (play-move bd 2)))
 
 (future-fact "play-move: board finished"
 )
+
+
+[:bd-33-22
+ {:l [],
+  :pnodes [[0 :bd-parent]]
+  :ppath nil,
+  :r (:bd-32-21
+      :bd-32-23
+      :bd-30-21)}]
+
 
 (println "--------- END OF SEARCH ----------" (java.util.Date.))

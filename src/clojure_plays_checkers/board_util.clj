@@ -41,7 +41,7 @@
 
 
 ;; FIXME: probably could be done with walk
-(defn pretty-board
+'(defn pretty-board
   [{bd :board}]
   (let [m {:w 'o, :w-king '0, :b 'x, :b-king 'K, nil '., " " " "}]
     (reduce str
@@ -53,13 +53,35 @@
                                (interpose " " row)))
                             bd)))))
 
+(defn pretty-board
+  [{bd :board}]
+  (let [m {:w 'o, :w-king '0, :b 'x, :b-king 'K, nil '., " " " "}]
+    (flatten (interpose "\n"
+                        (map #(interpose " " %)
+                             bd)))))
+
 (fact
  (pretty-board {:size   :s
                 :player :player
                 :coords :coords
                 :board  [[nil :w  :w-king]
                          [nil nil nil]
-                         [nil :b  :b-king]]}) => ". o 0
+                         [nil :b  :b-king]]}) =>
+". o 0
+. . .
+. x K")
+
+(defn pretty-bd-org
+  [bd])
+
+(fact
+ (pretty-board {:size   :s
+                :player :player
+                :coords :coords
+                :board  [[nil :w  :w-king]
+                         [nil nil nil]
+                         [nil :b  :b-king]]}) =>
+". o 0
 . . .
 . x K")
 

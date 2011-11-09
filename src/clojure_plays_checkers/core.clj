@@ -30,10 +30,10 @@
   (one-game :w) => :w
   (provided
     (new-board-at-startup) => :bd
-    (s/play-move    :bd)     => :bd1
-    (b/game-over?   :bd1)    => false
-    (io-play-move :bd1)    => :bd2
-    (b/game-over?   :bd2)    => :w))
+    (s/play-move    :bd)  => :bd1
+    (b/game-over?   :bd1) => false
+    (io-play-move :bd1)   => :bd2
+    (b/game-over?   :bd2) => :w))
 
 (fact "one-game : human black, human plays, computer plays, human play and win"
   (one-game :b) => :b
